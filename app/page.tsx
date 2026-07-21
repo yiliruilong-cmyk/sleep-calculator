@@ -21,6 +21,14 @@ type SleepScore = {
   improvements: string[];
 };
 
+type PlanDay = {
+  day: number;
+  title: string;
+  focus: string;
+  evening: string[];
+  morning: string;
+};
+
 const cycleCounts = [4, 5, 6];
 
 const offers = [
@@ -59,6 +67,86 @@ const offers = [
     bullets: ["Sleep log database", "Weekly score dashboard", "Habit experiments library"],
     cta: "Get Notion template",
     badge: "Template",
+  },
+];
+
+const sevenDayPlan: PlanDay[] = [
+  {
+    day: 1,
+    title: "Set Your Anchor",
+    focus: "Lock in one wake-up time and use it as the anchor for the week.",
+    evening: [
+      "Set tomorrow's wake-up alarm before your wind-down starts.",
+      "Put your phone charger outside arm's reach.",
+      "Write down one thing that could make bedtime slip later.",
+    ],
+    morning: "Get light within the first hour after waking, even if it is only a short walk or bright window time.",
+  },
+  {
+    day: 2,
+    title: "Build the Wind-Down Cue",
+    focus: "Teach your body that the night routine has started.",
+    evening: [
+      "Dim lights at the start of your routine.",
+      "Choose one low-effort task: shower, light stretching, or setting clothes out.",
+      "Keep the final 15 minutes predictable and quiet.",
+    ],
+    morning: "Rate your sleep quality from 1 to 5 and note what helped you fall asleep.",
+  },
+  {
+    day: 3,
+    title: "Move Stimulation Earlier",
+    focus: "Reduce the inputs that keep your brain alert late at night.",
+    evening: [
+      "Create a 30-minute screen cutoff before bed.",
+      "Move work, email, and planning tasks out of the last hour.",
+      "If you need audio, choose something familiar and calm.",
+    ],
+    morning: "Check whether the screen cutoff changed how quickly you felt sleepy.",
+  },
+  {
+    day: 4,
+    title: "Protect Your Sleep Window",
+    focus: "Make your recommended bedtime easier to keep.",
+    evening: [
+      "Set a reminder 15 minutes before your routine starts.",
+      "Avoid starting a new episode, task, or conversation near bedtime.",
+      "Prepare water, alarm, and room temperature before getting in bed.",
+    ],
+    morning: "Compare your planned bedtime with your actual bedtime and write the gap in minutes.",
+  },
+  {
+    day: 5,
+    title: "Clean Up Caffeine and Naps",
+    focus: "Remove common reasons your natural sleepiness arrives late.",
+    evening: [
+      "Use your last caffeine cutoff as an experiment, not a rule.",
+      "Keep naps short and earlier in the day when possible.",
+      "If you are not sleepy, stay calm and keep the room low-stimulation.",
+    ],
+    morning: "Note caffeine timing, nap timing, and whether your sleep felt lighter or deeper.",
+  },
+  {
+    day: 6,
+    title: "Review Your Pattern",
+    focus: "Look for the one change that produced the clearest benefit.",
+    evening: [
+      "Pick the best habit from Days 1-5 and repeat it exactly.",
+      "Remove one habit that did not help.",
+      "Keep the same wake-up time tomorrow.",
+    ],
+    morning: "Choose your top sleep trigger: timing, screens, caffeine, naps, light, noise, or stress.",
+  },
+  {
+    day: 7,
+    title: "Make It Repeatable",
+    focus: "Turn the week into a simple default routine.",
+    evening: [
+      "Write your default bedtime routine in three steps.",
+      "Choose one backup plan for busy nights.",
+      "Set your next 7-day wake-up target.",
+    ],
+    morning: "Keep the routine that improved your score and retest your sleep habit score next week.",
   },
 ];
 
@@ -309,7 +397,8 @@ export default function Home() {
 
   function handleOfferClick(offerId: string) {
     setSelectedOffer(offerId);
-    document.getElementById("sleep-products")?.scrollIntoView({ block: "start", behavior: "smooth" });
+    const targetId = offerId === "7-day-plan" ? "seven-day-plan" : "sleep-products";
+    document.getElementById(targetId)?.scrollIntoView({ block: "start", behavior: "smooth" });
   }
 
   function handlePrintRoutine() {
@@ -733,6 +822,74 @@ export default function Home() {
                 </button>
               </article>
             ))}
+          </div>
+        </section>
+
+        <section id="seven-day-plan" className="mb-6 rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
+          <div className="grid gap-5 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-mint">
+                Included plan
+              </p>
+              <h2 className="mt-2 text-2xl font-bold text-ink">7-Day Better Sleep Plan</h2>
+              <p className="mt-3 text-sm leading-7 text-ink/66">
+                Use this plan with your current result: get in bed around{" "}
+                <strong className="text-ink">{formatTime(best.bedtime)}</strong> and aim to wake around{" "}
+                <strong className="text-ink">{formatTime(best.wakeTime)}</strong>. The plan is designed
+                to improve consistency first, then reduce the habits that make bedtime slide later.
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+                <div className="rounded border border-ink/10 bg-mist p-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-ink/45">Current score</p>
+                  <p className="mt-1 text-3xl font-bold text-ink">{sleepScore.score}</p>
+                </div>
+                <div className="rounded border border-ink/10 bg-mist p-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-ink/45">Routine start</p>
+                  <p className="mt-1 text-2xl font-bold text-ink">{formatTime(addMinutes(best.bedtime, -routineLength))}</p>
+                </div>
+                <div className="rounded border border-ink/10 bg-mist p-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-ink/45">Daily target</p>
+                  <p className="mt-1 text-2xl font-bold text-ink">{formatDuration(best.sleepMinutes)}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handlePrintRoutine}
+                className="mt-4 w-full rounded bg-ink px-4 py-3 font-bold text-white transition hover:bg-ink/90"
+              >
+                Print the 7-day plan
+              </button>
+            </div>
+
+            <div className="grid gap-3">
+              {sevenDayPlan.map((day) => (
+                <article key={day.day} className="rounded border border-ink/10 bg-mist p-4">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p className="text-sm font-bold text-coral">Day {day.day}</p>
+                      <h3 className="mt-1 text-xl font-bold text-ink">{day.title}</h3>
+                    </div>
+                    <span className="rounded bg-white px-3 py-1 text-sm font-bold text-ink/68">
+                      {day.focus}
+                    </span>
+                  </div>
+                  <div className="mt-4 grid gap-3 md:grid-cols-[1fr_0.78fr]">
+                    <div className="rounded border border-white bg-white p-3">
+                      <p className="font-bold text-ink">Tonight checklist</p>
+                      <ul className="mt-2 flex flex-col gap-2 text-sm leading-6 text-ink/68">
+                        {day.evening.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="rounded border border-white bg-white p-3">
+                      <p className="font-bold text-ink">Morning note</p>
+                      <p className="mt-2 text-sm leading-6 text-ink/68">{day.morning}</p>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
