@@ -14,7 +14,53 @@ type CycleOption = {
   note: string;
 };
 
+type SleepScore = {
+  score: number;
+  label: string;
+  insight: string;
+  improvements: string[];
+};
+
 const cycleCounts = [4, 5, 6];
+
+const offers = [
+  {
+    id: "7-day-plan",
+    title: "7-Day Better Sleep Plan",
+    price: "$7",
+    description: "A simple daily reset plan built around your bedtime, wake-up time, and evening triggers.",
+    bullets: ["Daily wind-down checklist", "Morning reset prompts", "Caffeine and screen timing guide"],
+    cta: "Get the 7-day plan",
+    badge: "Entry product",
+  },
+  {
+    id: "routine-pdf",
+    title: "Personalized Sleep Routine PDF",
+    price: "$5",
+    description: "Turn tonight's result into a printable routine you can keep beside your bed.",
+    bullets: ["Bedtime and wake-up targets", "Step-by-step routine", "Personal notes from your inputs"],
+    cta: "Save routine as PDF",
+    badge: "Instant value",
+  },
+  {
+    id: "paid-planner",
+    title: "Paid Sleep Planner",
+    price: "$19",
+    description: "A lightweight planner for people who want to plan, track, and adjust their sleep week by week.",
+    bullets: ["Weekly planning pages", "Habit score tracking", "Sleep debt review prompts"],
+    cta: "Join planner waitlist",
+    badge: "Premium",
+  },
+  {
+    id: "notion-template",
+    title: "Notion Sleep Tracker Template",
+    price: "$9",
+    description: "Track bedtime, wake-up time, sleep quality, caffeine, screens, and weekly trends in Notion.",
+    bullets: ["Sleep log database", "Weekly score dashboard", "Habit experiments library"],
+    cta: "Get Notion template",
+    badge: "Template",
+  },
+];
 
 const modeCopy: Record<Mode, string> = {
   wake: "I want to wake up at...",
@@ -132,6 +178,68 @@ function buildRoutine(
   return { steps, notes };
 }
 
+function getSleepHabitScore(
+  sleepGoal: number,
+  latency: number,
+  routineLength: number,
+  screenUse: boolean,
+  caffeine: string,
+  nap: string,
+): SleepScore {
+  let score = 82;
+  const improvements = [];
+
+  if (sleepGoal < 7) {
+    score -= 14;
+    improvements.push("Aim for at least 7 hours when your schedule allows.");
+  }
+  if (latency >= 30) {
+    score -= 12;
+    improvements.push("Start winding down earlier to account for longer sleep latency.");
+  } else if (latency <= 10) {
+    score += 4;
+  }
+  if (routineLength >= 45) {
+    score += 6;
+  } else {
+    score -= 6;
+    improvements.push("Give yourself at least 45 minutes of wind-down time.");
+  }
+  if (screenUse) {
+    score -= 8;
+    improvements.push("Create a 30-minute screen cutoff before bed.");
+  }
+  if (caffeine === "late") {
+    score -= 18;
+    improvements.push("Move caffeine earlier in the day for a cleaner sleep window.");
+  } else if (caffeine === "afternoon") {
+    score -= 8;
+    improvements.push("Test a caffeine cutoff 8 hours before bedtime.");
+  }
+  if (nap === "late") {
+    score -= 12;
+    improvements.push("Keep naps earlier and shorter when nighttime sleep matters.");
+  } else if (nap === "early") {
+    score -= 3;
+  }
+
+  const bounded = Math.max(35, Math.min(98, score));
+  const label = bounded >= 85 ? "Strong" : bounded >= 70 ? "Good" : bounded >= 55 ? "Needs work" : "At risk";
+  const insight =
+    bounded >= 85
+      ? "Your inputs suggest a solid sleep setup. Keep the timing consistent."
+      : bounded >= 70
+        ? "You have a workable routine, with a few changes that could make it easier to follow."
+        : "Your routine has a few friction points that may make sleep timing harder to keep.";
+
+  return {
+    score: bounded,
+    label,
+    insight,
+    improvements: improvements.slice(0, 3),
+  };
+}
+
 export default function Home() {
   const [mode, setMode] = useState<Mode>("wake");
   const [wakeTime, setWakeTime] = useState("07:00");
@@ -192,6 +300,22 @@ export default function Home() {
     [best.bedtime, caffeine, latency, nap, routineLength, screenUse],
   );
 
+  const sleepScore = useMemo(
+    () => getSleepHabitScore(sleepGoal, latency, routineLength, screenUse, caffeine, nap),
+    [caffeine, latency, nap, routineLength, screenUse, sleepGoal],
+  );
+
+  const [selectedOffer, setSelectedOffer] = useState("7-day-plan");
+
+  function handleOfferClick(offerId: string) {
+    setSelectedOffer(offerId);
+    document.getElementById("sleep-products")?.scrollIntoView({ block: "start", behavior: "smooth" });
+  }
+
+  function handlePrintRoutine() {
+    window.print();
+  }
+
   return (
     <main className="min-h-screen">
       <section className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-5 sm:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:px-8 lg:py-8">
@@ -214,6 +338,9 @@ export default function Home() {
               </a>
               <a className="hover:text-ink" href="#routine">
                 Routine
+              </a>
+              <a className="hover:text-ink" href="#sleep-products">
+                Plans
               </a>
               <a className="hover:text-ink" href="#faq">
                 FAQ
@@ -412,6 +539,46 @@ export default function Home() {
                 ? "Most adults are commonly guided toward at least 7 hours of sleep. This tool is for planning, not diagnosis."
                 : "Sleep needs vary by age and person. Use this as a planning guide, not a medical rule."}
             </p>
+            <button
+              type="button"
+              onClick={() => handleOfferClick("routine-pdf")}
+              className="mt-4 w-full rounded bg-mint px-4 py-3 font-bold text-ink transition hover:bg-mint/90"
+            >
+              Save this routine as PDF
+            </button>
+          </section>
+
+          <section className="rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.14em] text-dusk">Sleep habit score</p>
+                <h2 className="mt-2 text-2xl font-bold text-ink">{sleepScore.label}</h2>
+              </div>
+              <div className="grid h-20 w-20 place-items-center rounded-full border-[8px] border-mint bg-mist text-2xl font-bold text-ink">
+                {sleepScore.score}
+              </div>
+            </div>
+            <p className="mt-3 text-sm leading-6 text-ink/66">{sleepScore.insight}</p>
+            <div className="mt-4 flex flex-col gap-2">
+              {sleepScore.improvements.length ? (
+                sleepScore.improvements.map((item) => (
+                  <p key={item} className="rounded border border-ink/10 bg-mist px-3 py-2 text-sm text-ink/68">
+                    {item}
+                  </p>
+                ))
+              ) : (
+                <p className="rounded border border-ink/10 bg-mist px-3 py-2 text-sm text-ink/68">
+                  Keep your wake-up time consistent for the next 7 days.
+                </p>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => handleOfferClick("7-day-plan")}
+              className="mt-4 w-full rounded border border-ink/14 px-4 py-3 font-bold text-ink transition hover:bg-mist"
+            >
+              Improve my score
+            </button>
           </section>
 
           <section className="rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
@@ -507,10 +674,68 @@ export default function Home() {
               lights-out time every night.
             </p>
           </div>
+          <button
+            type="button"
+            onClick={handlePrintRoutine}
+            className="mt-4 w-full rounded bg-ink px-4 py-3 font-bold text-white transition hover:bg-ink/90"
+          >
+            Print or save as PDF
+          </button>
         </section>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+        <section id="sleep-products" className="mb-6 rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-coral">
+                Sleep planning upgrades
+              </p>
+              <h2 className="mt-2 text-2xl font-bold text-ink">Turn tonight&apos;s result into a plan</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-ink/66">
+                These offers keep the calculator free while giving motivated users a paid next step.
+                Connect the buttons to Gumroad, Lemon Squeezy, Stripe, or PayPal after pricing is validated.
+              </p>
+            </div>
+            <div className="rounded border border-mint/25 bg-mint/8 px-4 py-3">
+              <p className="text-sm font-bold text-ink">Selected</p>
+              <p className="text-sm text-ink/62">
+                {offers.find((offer) => offer.id === selectedOffer)?.title}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {offers.map((offer) => (
+              <article
+                key={offer.id}
+                className={`flex min-h-full flex-col rounded border p-4 ${
+                  selectedOffer === offer.id ? "border-dusk bg-dusk/6" : "border-ink/10 bg-white"
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <span className="rounded bg-ink px-2 py-1 text-xs font-bold text-white">{offer.badge}</span>
+                  <span className="text-xl font-bold text-ink">{offer.price}</span>
+                </div>
+                <h3 className="mt-4 text-lg font-bold text-ink">{offer.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-ink/64">{offer.description}</p>
+                <ul className="mt-3 flex flex-col gap-2 text-sm leading-6 text-ink/68">
+                  {offer.bullets.map((bullet) => (
+                    <li key={bullet}>{bullet}</li>
+                  ))}
+                </ul>
+                <button
+                  type="button"
+                  onClick={offer.id === "routine-pdf" ? handlePrintRoutine : () => handleOfferClick(offer.id)}
+                  className="mt-auto rounded bg-ink px-4 py-3 font-bold text-white transition hover:bg-ink/90"
+                >
+                  {offer.cta}
+                </button>
+              </article>
+            ))}
+          </div>
+        </section>
+
         <section className="mb-6 rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-2xl">
@@ -597,12 +822,12 @@ export default function Home() {
           <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-mint">
-                Coming next
+                Free lead magnet
               </p>
-              <h2 className="mt-2 text-2xl font-bold">Get a 7-day sleep reset plan</h2>
+              <h2 className="mt-2 text-2xl font-bold">Preview the 7-day better sleep plan</h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-white/68">
-                This future email capture can turn calculator users into subscribers without hiding
-                the result. Keep it optional and useful.
+                Capture early demand before connecting payments. Send a sample routine, then offer
+                the full planner, PDF, or Notion tracker.
               </p>
             </div>
             <form className="grid gap-2 sm:grid-cols-[260px_auto]" aria-label="Sleep reset waitlist">
@@ -615,7 +840,7 @@ export default function Home() {
                 type="button"
                 className="rounded bg-mint px-4 py-3 font-bold text-ink transition hover:bg-mint/90"
               >
-                Join waitlist
+                Send me the preview
               </button>
             </form>
           </div>

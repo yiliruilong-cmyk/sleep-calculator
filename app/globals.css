@@ -34,3 +34,31 @@ select {
 ::selection {
   background: rgba(79, 70, 229, 0.18);
 }
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  header,
+  nav,
+  form,
+  footer,
+  button,
+  #sleep-products,
+  #faq {
+    display: none !important;
+  }
+
+  main,
+  section,
+  aside,
+  article,
+  div {
+    box-shadow: none !important;
+  }
+
+  section {
+    break-inside: avoid;
+  }
+}
