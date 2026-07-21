@@ -37,3 +37,32 @@ The product should not act as a medical diagnosis tool. It provides general plan
 Initial product planning repository.
 
 See [docs/mvp-requirements.md](docs/mvp-requirements.md) for the detailed MVP requirements.
+
+## Cloudflare Pages Deployment
+
+This project is configured as a static Next.js export for Cloudflare Pages.
+
+Build command:
+
+```bash
+npm run build
+```
+
+Build output directory:
+
+```text
+out
+```
+
+GitHub Actions deployment requires these repository secrets:
+
+```text
+CLOUDFLARE_API_TOKEN
+CLOUDFLARE_ACCOUNT_ID
+```
+
+Cloudflare Pages project name:
+
+```text
+sleep-calculator
+```

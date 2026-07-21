@@ -511,6 +511,33 @@ export default function Home() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+        <section className="mb-6 rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-coral">
+                Recommended sleep setup
+              </p>
+              <h2 className="mt-2 text-2xl font-bold text-ink">Make the bedtime easier to follow</h2>
+              <p className="mt-3 text-sm leading-7 text-ink/66">
+                The calculator gives the time. Your room and evening cues make the plan easier to
+                keep. Use this area later for clearly labeled affiliate recommendations.
+              </p>
+            </div>
+            <div className="grid w-full gap-3 sm:grid-cols-3 lg:max-w-xl">
+              {[
+                ["Light", "Dim lights 60 minutes before bed"],
+                ["Sound", "Reduce noise or use steady background audio"],
+                ["Temperature", "Keep the room comfortably cool"],
+              ].map(([title, detail]) => (
+                <div key={title} className="rounded border border-ink/10 bg-mist p-4">
+                  <p className="font-bold text-ink">{title}</p>
+                  <p className="mt-2 text-sm leading-6 text-ink/62">{detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <div className="grid gap-6 lg:grid-cols-[0.88fr_1.12fr]">
           <section className="rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
             <h2 className="text-2xl font-bold text-ink">How this calculator works</h2>
@@ -565,6 +592,34 @@ export default function Home() {
             </div>
           </section>
         </div>
+
+        <section className="mt-6 rounded-lg border border-dusk/15 bg-ink p-5 text-white shadow-soft md:p-6">
+          <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-mint">
+                Coming next
+              </p>
+              <h2 className="mt-2 text-2xl font-bold">Get a 7-day sleep reset plan</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-white/68">
+                This future email capture can turn calculator users into subscribers without hiding
+                the result. Keep it optional and useful.
+              </p>
+            </div>
+            <form className="grid gap-2 sm:grid-cols-[260px_auto]" aria-label="Sleep reset waitlist">
+              <input
+                type="email"
+                placeholder="Email address"
+                className="rounded border border-white/12 bg-white px-3 py-3 text-ink outline-none focus:border-mint"
+              />
+              <button
+                type="button"
+                className="rounded bg-mint px-4 py-3 font-bold text-ink transition hover:bg-mint/90"
+              >
+                Join waitlist
+              </button>
+            </form>
+          </div>
+        </section>
 
         <footer className="mt-6 rounded-lg border border-ink/10 bg-white/82 p-4 text-sm leading-6 text-ink/62">
           This tool provides general sleep planning and education only. It does not diagnose or treat

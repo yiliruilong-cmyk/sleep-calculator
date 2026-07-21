@@ -276,7 +276,102 @@ Do not build in v0.1:
 - Sleep habit score
 - Shareable sleep plan
 
-## 17. Reference Sources
+## 17. Monetization Strategy
+
+The MVP should stay free. The first business goal is to validate search traffic, calculator usage, and whether users respond to lightweight conversion points.
+
+Monetization should be introduced in stages:
+
+### Stage 1: Traffic And Intent Validation
+
+Primary goal:
+
+- Confirm that search users land on the calculator
+- Confirm that users complete the calculator
+- Confirm that results and routine sections keep users on the page
+
+No aggressive monetization in this stage.
+
+Allowed MVP conversion points:
+
+- A non-intrusive sleep setup recommendation section
+- A waitlist or email capture for a 7-day better sleep plan
+- Contextual links to future guide pages
+
+### Stage 2: Lightweight Revenue
+
+Once the site has search impressions and usage data, add:
+
+- Display ads on guide pages, not inside the calculator flow
+- Affiliate links for sleep-related products
+- Affiliate links for sleep apps or white noise tools
+- Sponsored content only if clearly disclosed
+
+Potential affiliate categories:
+
+- Pillows
+- Eye masks
+- White noise machines
+- Sunrise alarm clocks
+- Cooling sheets
+- Sleep headphones
+- Weighted blankets
+- Sleep tracking apps
+
+### Stage 3: Productized Revenue
+
+If users engage with the routine planner, test:
+
+- 7-day better sleep plan
+- Printable wind-down routine PDF
+- Notion sleep tracker template
+- Personalized sleep habit score
+- Email course sponsorship
+
+The paid offering must remain lifestyle and planning oriented. It should not claim to treat insomnia or medical sleep disorders.
+
+## 18. Commercial Placement Rules
+
+Do:
+
+- Place recommendations after the user sees calculator results
+- Label affiliate or sponsored content clearly
+- Keep the calculator itself fast and distraction-free
+- Prioritize products that fit the user's stated sleep context
+
+Do not:
+
+- Block results behind email capture
+- Put ads inside form inputs or primary results
+- Make medical claims about products
+- Recommend supplements as a first monetization category
+- Use dark patterns or urgency claims
+
+Suggested MVP placements:
+
+- Below results: "Recommended sleep setup"
+- Below FAQ: "Get a 7-day sleep reset plan"
+- On guide pages: contextual product/tool recommendations
+
+## 19. Cloudflare Deployment Plan
+
+The MVP is a static Next.js export and can be deployed to Cloudflare Pages.
+
+Build output:
+
+```text
+out
+```
+
+GitHub Actions deployment requirements:
+
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+- Cloudflare Pages project name: `sleep-calculator`
+
+The GitHub workflow should run on pushes to `main` and deploy the static `out` directory to Cloudflare Pages.
+
+## 20. Reference Sources
 
 - CDC sleep basics: https://www.cdc.gov/sleep/about/index.html
 - CDC adult sleep duration data: https://www.cdc.gov/nchs/products/databriefs/db559.htm
