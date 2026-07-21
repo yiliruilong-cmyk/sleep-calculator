@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Mode = "wake" | "bed" | "duration";
 
@@ -29,7 +29,43 @@ type PlanDay = {
   morning: string;
 };
 
+type GoogleUser = {
+  email: string;
+  name: string;
+  picture: string;
+};
+
+type GoogleCredentialResponse = {
+  credential?: string;
+};
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          disableAutoSelect: () => void;
+          initialize: (config: {
+            callback: (response: GoogleCredentialResponse) => void;
+            client_id: string;
+          }) => void;
+          renderButton: (
+            element: HTMLElement,
+            options: {
+              shape?: string;
+              size?: string;
+              text?: string;
+              theme?: string;
+            },
+          ) => void;
+        };
+      };
+    };
+  }
+}
+
 const cycleCounts = [4, 5, 6];
+const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
 
 const offers = [
   {
@@ -186,6 +222,27 @@ function addMinutes(time: number, delta: number) {
   return wrapMinutes(time + delta);
 }
 
+function parseGoogleCredential(credential: string): GoogleUser | null {
+  try {
+    const payload = credential.split(".")[1];
+    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), "=");
+    const decoded = JSON.parse(window.atob(padded));
+
+    if (!decoded.email || !decoded.name) {
+      return null;
+    }
+
+    return {
+      email: decoded.email,
+      name: decoded.name,
+      picture: decoded.picture || "",
+    };
+  } catch {
+    return null;
+  }
+}
+
 function getOptionLabel(cycles: number, sleepMinutes: number, goalMinutes: number) {
   if (sleepMinutes < 420) return "Short sleep";
   if (Math.abs(sleepMinutes - goalMinutes) <= 45) return "Best match";
@@ -339,6 +396,8 @@ export default function Home() {
   const [caffeine, setCaffeine] = useState("none");
   const [nap, setNap] = useState("none");
   const [screenUse, setScreenUse] = useState(true);
+  const [googleUser, setGoogleUser] = useState<GoogleUser | null>(null);
+  const googleButtonRef = useRef<HTMLDivElement | null>(null);
 
   const results = useMemo(() => {
     const wake = toMinutes(wakeTime);
@@ -395,6 +454,65 @@ export default function Home() {
 
   const [selectedOffer, setSelectedOffer] = useState("7-day-plan");
 
+  useEffect(() => {
+    const savedUser = window.localStorage.getItem("sleep-calculator-google-user");
+    if (savedUser) {
+      try {
+        setGoogleUser(JSON.parse(savedUser));
+      } catch {
+        window.localStorage.removeItem("sleep-calculator-google-user");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!googleClientId || googleUser) return;
+
+    const renderGoogleButton = () => {
+      if (!window.google || !googleButtonRef.current) return;
+
+      googleButtonRef.current.innerHTML = "";
+      window.google.accounts.id.initialize({
+        client_id: googleClientId,
+        callback: (response) => {
+          if (!response.credential) return;
+
+          const user = parseGoogleCredential(response.credential);
+          if (!user) return;
+
+          window.localStorage.setItem("sleep-calculator-google-user", JSON.stringify(user));
+          setGoogleUser(user);
+        },
+      });
+      window.google.accounts.id.renderButton(googleButtonRef.current, {
+        shape: "rectangular",
+        size: "medium",
+        text: "signin_with",
+        theme: "outline",
+      });
+    };
+
+    if (window.google) {
+      renderGoogleButton();
+      return;
+    }
+
+    const existingScript = document.querySelector<HTMLScriptElement>(
+      'script[src="https://accounts.google.com/gsi/client"]',
+    );
+    if (existingScript) {
+      existingScript.addEventListener("load", renderGoogleButton, { once: true });
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    script.onload = renderGoogleButton;
+    document.head.appendChild(script);
+  }, [googleUser]);
+
   function handleOfferClick(offerId: string) {
     setSelectedOffer(offerId);
     const targetId = offerId === "7-day-plan" ? "seven-day-plan" : "sleep-products";
@@ -405,11 +523,17 @@ export default function Home() {
     window.print();
   }
 
+  function handleGoogleSignOut() {
+    window.localStorage.removeItem("sleep-calculator-google-user");
+    window.google?.accounts.id.disableAutoSelect();
+    setGoogleUser(null);
+  }
+
   return (
     <main className="min-h-screen">
       <section className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-5 sm:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:px-8 lg:py-8">
         <div className="flex flex-col gap-5">
-          <header className="flex items-center justify-between gap-3">
+          <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <a href="#calculator" className="flex items-center gap-3" aria-label="Sleep Calculator home">
               <span className="grid h-10 w-10 place-items-center rounded bg-ink text-lg font-bold text-white">
                 SC
@@ -421,20 +545,57 @@ export default function Home() {
                 <span className="block text-lg font-bold text-ink">Sleep Calculator</span>
               </span>
             </a>
-            <nav className="hidden items-center gap-4 text-sm font-semibold text-ink/70 sm:flex">
-              <a className="hover:text-ink" href="#calculator">
-                Calculator
-              </a>
-              <a className="hover:text-ink" href="#routine">
-                Routine
-              </a>
-              <a className="hover:text-ink" href="#sleep-products">
-                Plans
-              </a>
-              <a className="hover:text-ink" href="#faq">
-                FAQ
-              </a>
-            </nav>
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+              <nav className="hidden items-center gap-4 text-sm font-semibold text-ink/70 sm:flex">
+                <a className="hover:text-ink" href="#calculator">
+                  Calculator
+                </a>
+                <a className="hover:text-ink" href="#routine">
+                  Routine
+                </a>
+                <a className="hover:text-ink" href="#sleep-products">
+                  Plans
+                </a>
+                <a className="hover:text-ink" href="#faq">
+                  FAQ
+                </a>
+              </nav>
+
+              <div className="rounded border border-ink/10 bg-white/80 p-2">
+                {googleUser ? (
+                  <div className="flex items-center gap-2">
+                    {googleUser.picture ? (
+                      <img
+                        src={googleUser.picture}
+                        alt=""
+                        className="h-8 w-8 rounded-full border border-ink/10"
+                      />
+                    ) : (
+                      <span className="grid h-8 w-8 place-items-center rounded-full bg-mist text-sm font-bold text-ink">
+                        {googleUser.name.charAt(0)}
+                      </span>
+                    )}
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-bold text-ink">{googleUser.name}</p>
+                      <p className="truncate text-xs text-ink/52">{googleUser.email}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleGoogleSignOut}
+                      className="rounded border border-ink/10 px-2 py-1 text-xs font-bold text-ink transition hover:bg-mist"
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                ) : googleClientId ? (
+                  <div ref={googleButtonRef} aria-label="Sign in with Google" />
+                ) : (
+                  <p className="text-xs font-semibold text-ink/62">
+                    Add Google Client ID to enable sign in
+                  </p>
+                )}
+              </div>
+            </div>
           </header>
 
           <section className="rounded-lg border border-white/70 bg-white/82 p-5 shadow-soft backdrop-blur md:p-7">

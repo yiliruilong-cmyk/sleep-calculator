@@ -17,6 +17,9 @@ The product should not act as a medical diagnosis tool. It provides general plan
 - Wake-up Time Calculator
 - Sleep Cycle Options
 - Personalized Wind-down Routine
+- Sleep Habit Score
+- 7-Day Better Sleep Plan
+- Google Sign-In
 - Sleep education and FAQ content
 
 ## Primary SEO Keyword
@@ -66,3 +69,25 @@ Cloudflare Pages project name:
 ```text
 sleep-calculator
 ```
+
+## Google Sign-In
+
+The site uses Google Identity Services on the client side. Create an OAuth 2.0
+Client ID in Google Cloud Console, then set this environment variable in
+Cloudflare Pages:
+
+```text
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+```
+
+Authorized JavaScript origins should include:
+
+```text
+https://sleepcalculator.life
+https://www.sleepcalculator.life
+https://sleep-calculator-7lj.pages.dev
+```
+
+This MVP stores the signed-in user's basic profile in browser local storage. Add
+server-side token verification before using Google Sign-In for paid access or
+private user data.
