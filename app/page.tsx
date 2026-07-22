@@ -556,6 +556,9 @@ export default function Home() {
                 <a className="hover:text-ink" href="#sleep-products">
                   Plans
                 </a>
+                <a className="hover:text-ink" href="#free-tools">
+                  Tools
+                </a>
                 <a className="hover:text-ink" href="#faq">
                   FAQ
                 </a>
@@ -982,6 +985,60 @@ export default function Home() {
                   {offer.cta}
                 </button>
               </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="free-tools" className="mb-6 rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-mint">
+                More free sleep tools
+              </p>
+              <h2 className="mt-2 text-2xl font-bold text-ink">Explore focused sleep planners</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-ink/66">
+                These pages target specific sleep questions while pointing users back to the main
+                calculator, 7-day plan, and paid template offers.
+              </p>
+            </div>
+            <a
+              href="/sleep-routine-planner"
+              className="rounded bg-ink px-4 py-3 text-center font-bold text-white transition hover:bg-ink/90"
+            >
+              Start with routine planner
+            </a>
+          </div>
+
+          <div className="mt-5 grid gap-4 md:grid-cols-3">
+            {[
+              {
+                href: "/sleep-debt-calculator",
+                title: "Sleep Debt Calculator",
+                description:
+                  "Estimate missed sleep across the week and build a realistic recovery plan.",
+              },
+              {
+                href: "/sleep-routine-planner",
+                title: "Sleep Routine Planner",
+                description:
+                  "Create a wind-down schedule from your wake-up time, sleep target, and evening style.",
+              },
+              {
+                href: "/notion-sleep-tracker",
+                title: "Notion Sleep Tracker",
+                description:
+                  "Preview a tracker template for bedtime, wake-up time, quality, caffeine, and trends.",
+              },
+            ].map((tool) => (
+              <a
+                key={tool.href}
+                href={tool.href}
+                className="rounded border border-ink/10 bg-mist p-4 transition hover:border-dusk hover:bg-dusk/6"
+              >
+                <h3 className="text-lg font-bold text-ink">{tool.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-ink/64">{tool.description}</p>
+                <span className="mt-4 inline-flex text-sm font-bold text-dusk">Open tool</span>
+              </a>
             ))}
           </div>
         </section>
