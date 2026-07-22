@@ -465,6 +465,18 @@ export function CheckoutPageClient() {
             PayPal sandbox mode while we validate the product.
           </p>
 
+          <section className="mt-5 rounded border border-mint/25 bg-mint/8 p-4">
+            <p className="text-sm font-bold uppercase tracking-[0.14em] text-mint">
+              Delivered after payment
+            </p>
+            <div className="mt-3 grid gap-3 text-sm leading-6 text-ink/68 sm:grid-cols-2">
+              <p>7-day better sleep plan with one practical reset task per day.</p>
+              <p>Printable routine guide that can be saved as a browser PDF.</p>
+              <p>Sleep habit score checklist for weekly self-review.</p>
+              <p>Notion sleep tracker field list and setup guidance.</p>
+            </div>
+          </section>
+
           <div className="mt-6 grid gap-3">
             {offers.map((offer) => {
               const isSelected = offer.id === selectedOffer;
@@ -530,6 +542,28 @@ export function CheckoutPageClient() {
               </p>
             ) : null}
           </div>
+
+          <section className="mt-5 rounded border border-ink/10 bg-white p-4 text-sm leading-6 text-ink/64">
+            <h3 className="text-lg font-bold text-ink">Purchase terms</h3>
+            <p className="mt-2">
+              This is a one-time digital purchase that unlocks 30-day access. It is not a
+              subscription and does not renew automatically.
+            </p>
+            <h3 className="mt-4 text-lg font-bold text-ink">Refund policy</h3>
+            <p className="mt-2">
+              If payment succeeds but the success page or paid materials cannot be opened, contact
+              support at support@sleepcalculator.life within 7 days for help or a refund review.
+              Because the product is delivered immediately as digital content, completed orders are
+              generally not refundable after the materials are accessed, except for duplicate charges
+              or technical delivery failures.
+            </p>
+            <h3 className="mt-4 text-lg font-bold text-ink">Health disclaimer</h3>
+            <p className="mt-2">
+              Sleep Calculator provides general planning and education only. It is not medical
+              advice and does not diagnose or treat insomnia, sleep apnea, anxiety, depression, or
+              any medical condition.
+            </p>
+          </section>
         </aside>
       </section>
     </main>
