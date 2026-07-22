@@ -74,8 +74,8 @@ const offers = [
     price: "$7",
     description: "A simple daily reset plan built around your bedtime, wake-up time, and evening triggers.",
     bullets: ["Daily wind-down checklist", "Morning reset prompts", "Caffeine and screen timing guide"],
-    cta: "Get the 7-day plan",
-    badge: "Entry product",
+    cta: "Start the 7-day plan",
+    badge: "Best starter",
   },
   {
     id: "routine-pdf",
@@ -105,6 +105,9 @@ const offers = [
     badge: "Template",
   },
 ];
+
+const starterOffer = offers[0];
+const upgradeOffers = offers.slice(1);
 
 const sevenDayPlan: PlanDay[] = [
   {
@@ -944,10 +947,10 @@ export default function Home() {
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-coral">
                 Sleep planning upgrades
               </p>
-              <h2 className="mt-2 text-2xl font-bold text-ink">Turn tonight&apos;s result into a plan</h2>
+              <h2 className="mt-2 text-2xl font-bold text-ink">Start with the 7-Day Better Sleep Plan</h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-ink/66">
-                These offers keep the calculator free while giving motivated users a paid next step.
-                Connect the buttons to Gumroad, Lemon Squeezy, Stripe, or PayPal after pricing is validated.
+                Keep the free calculator open to everyone, then use the $7 plan as the first paid
+                step for users who want a simple structure to follow this week.
               </p>
             </div>
             <div className="rounded border border-mint/25 bg-mint/8 px-4 py-3">
@@ -958,8 +961,37 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {offers.map((offer) => (
+          <div className="mt-5 grid gap-4 lg:grid-cols-[1.05fr_1fr]">
+            <article
+              className={`flex min-h-full flex-col rounded border p-5 ${
+                selectedOffer === starterOffer.id ? "border-dusk bg-dusk/6" : "border-ink/10 bg-white"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <span className="rounded bg-ink px-2 py-1 text-xs font-bold text-white">{starterOffer.badge}</span>
+                <span className="text-3xl font-bold text-ink">{starterOffer.price}</span>
+              </div>
+              <h3 className="mt-4 text-2xl font-bold text-ink">{starterOffer.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-ink/64">{starterOffer.description}</p>
+              <ul className="mt-4 flex flex-col gap-2 text-sm leading-6 text-ink/68">
+                {starterOffer.bullets.map((bullet) => (
+                  <li key={bullet}>{bullet}</li>
+                ))}
+              </ul>
+              <button
+                type="button"
+                onClick={() => handleOfferClick(starterOffer.id)}
+                className="mt-auto rounded bg-ink px-4 py-3 font-bold text-white transition hover:bg-ink/90"
+              >
+                {starterOffer.cta}
+              </button>
+              <p className="mt-3 text-xs leading-5 text-ink/50">
+                Early-stage validation price. Later this can become the front door to a larger bundle.
+              </p>
+            </article>
+
+            <div className="grid gap-3 md:grid-cols-3 lg:grid-cols-1">
+              {upgradeOffers.map((offer) => (
               <article
                 key={offer.id}
                 className={`flex min-h-full flex-col rounded border p-4 ${
@@ -968,7 +1000,7 @@ export default function Home() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <span className="rounded bg-ink px-2 py-1 text-xs font-bold text-white">{offer.badge}</span>
-                  <span className="text-xl font-bold text-ink">{offer.price}</span>
+                  <span className="text-lg font-bold text-ink">{offer.price}</span>
                 </div>
                 <h3 className="mt-4 text-lg font-bold text-ink">{offer.title}</h3>
                 <p className="mt-2 text-sm leading-6 text-ink/64">{offer.description}</p>
@@ -985,7 +1017,8 @@ export default function Home() {
                   {offer.cta}
                 </button>
               </article>
-            ))}
+              ))}
+            </div>
           </div>
         </section>
 
