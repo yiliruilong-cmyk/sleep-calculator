@@ -1,0 +1,6 @@
+name = "sleep-calculator"
+pages_build_output_dir = "out"
+
+[[kv_namespaces]]
+binding = "SLEEP_ACCESS_KV"
+id = "0c06fa57ca5045f5af8eccb6e6eb8270"

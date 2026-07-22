@@ -95,8 +95,8 @@ declare global {
 
 const cycleCounts = [4, 5, 6];
 const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
+const googleCredentialStorageKey = "sleep-calculator-google-credential";
 const paidAccessStorageKey = "sleep-calculator-paid-access";
-const paidAccessDays = 30;
 
 const offers = [
   {
@@ -465,6 +465,7 @@ export default function Home() {
   const [nap, setNap] = useState("none");
   const [screenUse, setScreenUse] = useState(true);
   const [googleUser, setGoogleUser] = useState<GoogleUser | null>(null);
+  const [googleCredential, setGoogleCredential] = useState("");
   const [paidAccess, setPaidAccess] = useState<PaidAccess | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<"idle" | "loading" | "ready" | "processing" | "error">(
     "idle",
@@ -536,10 +537,19 @@ export default function Home() {
     : "";
 
   useEffect(() => {
-    const savedUser = window.localStorage.getItem("sleep-calculator-google-user");
-    if (savedUser) {
+    const savedCredential = window.localStorage.getItem(googleCredentialStorageKey);
+    if (savedCredential) {
+      const user = parseGoogleCredential(savedCredential);
+      if (user) {
+        setGoogleUser(user);
+        setGoogleCredential(savedCredential);
+      } else {
+        window.localStorage.removeItem(googleCredentialStorageKey);
+      }
+    } else {
+      const savedUser = window.localStorage.getItem("sleep-calculator-google-user");
       try {
-        setGoogleUser(JSON.parse(savedUser));
+        if (savedUser) setGoogleUser(JSON.parse(savedUser));
       } catch {
         window.localStorage.removeItem("sleep-calculator-google-user");
       }
@@ -575,8 +585,10 @@ export default function Home() {
           const user = parseGoogleCredential(response.credential);
           if (!user) return;
 
+          window.localStorage.setItem(googleCredentialStorageKey, response.credential);
           window.localStorage.setItem("sleep-calculator-google-user", JSON.stringify(user));
           setGoogleUser(user);
+          setGoogleCredential(response.credential);
         },
       });
       window.google.accounts.id.renderButton(googleButtonRef.current, {
@@ -609,11 +621,68 @@ export default function Home() {
   }, [googleUser]);
 
   useEffect(() => {
+    if (!googleCredential) return;
+
+    let isCancelled = false;
+
+    async function refreshAccess() {
+      try {
+        const response = await fetch("/api/access/me", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ googleCredential }),
+        });
+        const data = await response.json();
+
+        if (isCancelled) return;
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            window.localStorage.removeItem(googleCredentialStorageKey);
+            window.localStorage.removeItem("sleep-calculator-google-user");
+            window.localStorage.removeItem(paidAccessStorageKey);
+            setGoogleCredential("");
+            setGoogleUser(null);
+            setPaidAccess(null);
+            setPaymentMessage("Please sign in with Google again before purchasing.");
+          }
+          return;
+        }
+
+        if (data.active && data.access) {
+          window.localStorage.setItem(paidAccessStorageKey, JSON.stringify(data.access));
+          setPaidAccess(data.access);
+        } else {
+          window.localStorage.removeItem(paidAccessStorageKey);
+          setPaidAccess(null);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    refreshAccess();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [googleCredential]);
+
+  useEffect(() => {
     let isCancelled = false;
     let buttons: PayPalButtonsInstance | null = null;
 
     async function renderPayPalButtons() {
       if (!paypalButtonRef.current) return;
+
+      if (!googleCredential) {
+        paypalButtonRef.current.innerHTML = "";
+        setPaymentStatus("idle");
+        setPaymentMessage("Sign in with Google first so your purchase can be saved to your account.");
+        return;
+      }
 
       setPaymentStatus("loading");
       setPaymentMessage("Loading secure PayPal checkout...");
@@ -659,19 +728,19 @@ export default function Home() {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ orderId: data.orderID }),
+              body: JSON.stringify({
+                googleCredential,
+                offerId: selectedOffer,
+                orderId: data.orderID,
+              }),
             });
             const capture = await response.json();
 
-            if (!response.ok || capture.status !== "COMPLETED") {
+            if (!response.ok || capture.status !== "COMPLETED" || !capture.access) {
               throw new Error(capture.error || "Could not confirm PayPal payment.");
             }
 
-            const access = {
-              offerId: selectedOffer,
-              orderId: data.orderID,
-              expiresAt: Date.now() + paidAccessDays * 24 * 60 * 60 * 1000,
-            };
+            const access = capture.access as PaidAccess;
             window.localStorage.setItem(paidAccessStorageKey, JSON.stringify(access));
             setPaidAccess(access);
             window.location.assign(`/payment-success?offer=${selectedOffer}`);
@@ -707,7 +776,7 @@ export default function Home() {
       isCancelled = true;
       buttons?.close?.();
     };
-  }, [selectedOffer]);
+  }, [googleCredential, selectedOffer]);
 
   function handleOfferClick(offerId: string) {
     setSelectedOffer(offerId);
@@ -720,9 +789,13 @@ export default function Home() {
   }
 
   function handleGoogleSignOut() {
+    window.localStorage.removeItem(googleCredentialStorageKey);
     window.localStorage.removeItem("sleep-calculator-google-user");
+    window.localStorage.removeItem(paidAccessStorageKey);
     window.google?.accounts.id.disableAutoSelect();
+    setGoogleCredential("");
     setGoogleUser(null);
+    setPaidAccess(null);
   }
 
   return (
@@ -1222,18 +1295,18 @@ export default function Home() {
                   Buy {selectedOfferDetails.title} for {selectedOfferDetails.price}
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-ink/64">
-                  This is a one-time sandbox payment. A successful purchase unlocks a 30-day monthly
-                  access marker in this browser for MVP validation.
+                  This is a one-time sandbox payment. Sign in first so a successful purchase can
+                  unlock 30-day access on your Google account.
                 </p>
                 {paidAccess ? (
                   <p className="mt-3 rounded border border-mint/25 bg-mint/10 px-3 py-2 text-sm font-semibold text-ink">
-                    Monthly access active until {paidAccessExpiresAt}.
+                    Account access active until {paidAccessExpiresAt}.
                   </p>
                 ) : null}
               </div>
               <div className="rounded border border-white bg-white p-3">
                 <div ref={paypalButtonRef} />
-                {paymentStatus === "loading" || paymentStatus === "processing" || paymentStatus === "error" ? (
+                {paymentMessage ? (
                   <p
                     className={`mt-3 text-sm leading-6 ${
                       paymentStatus === "error" ? "text-coral" : "text-ink/60"

@@ -88,9 +88,9 @@ https://www.sleepcalculator.life
 https://sleep-calculator-7lj.pages.dev
 ```
 
-This MVP stores the signed-in user's basic profile in browser local storage. Add
-server-side token verification before using Google Sign-In for paid access or
-private user data.
+The client stores the signed-in user's basic profile and credential locally for
+MVP convenience. Pages Functions verify the Google credential before reading or
+writing paid access.
 
 ## PayPal Sandbox Checkout
 
@@ -103,14 +103,18 @@ PAYPAL_CLIENT_SECRET=your-paypal-sandbox-client-secret
 PAYPAL_ENVIRONMENT=sandbox
 ```
 
+Paid access is stored in Cloudflare KV and bound to the verified Google account.
+Create a KV namespace and bind it to Pages Functions:
+
+```text
+SLEEP_ACCESS_KV
+```
+
 Runtime API routes:
 
 ```text
+/api/access/me
 /api/paypal/config
 /api/paypal/create-order
 /api/paypal/capture-order
 ```
-
-The MVP records a successful one-time payment as a 30-day browser-local access
-marker. Before using this for production access, store entitlements in a
-server-side database and bind them to the signed-in Google account.

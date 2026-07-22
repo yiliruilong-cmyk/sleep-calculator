@@ -15,9 +15,8 @@ export default function PaymentSuccessPage() {
           <p className="text-sm font-bold uppercase tracking-[0.16em] text-mint">Payment successful</p>
           <h1 className="mt-3 text-4xl font-bold leading-tight text-ink">Your monthly access is active.</h1>
           <p className="mt-4 text-sm leading-7 text-ink/66">
-            Your PayPal sandbox payment has been captured. For this MVP, the access marker is stored
-            in your browser for 30 days. The next production step is to bind access to your Google
-            account with a small database.
+            Your PayPal sandbox payment has been captured. The access marker is saved to your
+            Google account for 30 days, with a local browser cache for a smoother return visit.
           </p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <a
