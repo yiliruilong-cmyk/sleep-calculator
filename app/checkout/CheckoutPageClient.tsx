@@ -461,8 +461,8 @@ export function CheckoutPageClient() {
             Choose your sleep upgrade.
           </h1>
           <p className="mt-4 text-sm leading-7 text-ink/66">
-            Start with the $7 plan or choose a focused planner/template. This checkout is still in
-            PayPal sandbox mode while we validate the product.
+            Start with the $7 plan or choose a focused planner/template. Your purchase is processed
+            securely with PayPal and saved to your Google account for 30 days.
           </p>
 
           <section className="mt-5 rounded border border-mint/25 bg-mint/8 p-4">
@@ -515,8 +515,8 @@ export function CheckoutPageClient() {
             Pay {selectedOfferDetails.price} for {selectedOfferDetails.title}
           </h2>
           <p className="mt-3 text-sm leading-7 text-ink/64">
-            Sign in with Google first. After PayPal confirms the sandbox payment, the purchase is
-            saved to your Google account for 30 days.
+            Sign in with Google first. After PayPal confirms the payment, the purchase is saved to
+            your Google account for 30 days.
           </p>
 
           {paidAccess ? (

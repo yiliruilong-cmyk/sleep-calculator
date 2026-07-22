@@ -1241,12 +1241,12 @@ export default function Home() {
           <div className="mt-5 rounded border border-ink/10 bg-mist p-4">
             <div className="grid gap-4 lg:grid-cols-[0.86fr_1.14fr] lg:items-start">
               <div>
-                <p className="text-sm font-bold uppercase tracking-[0.14em] text-dusk">PayPal sandbox checkout</p>
+                <p className="text-sm font-bold uppercase tracking-[0.14em] text-dusk">Secure PayPal checkout</p>
                 <h3 className="mt-2 text-xl font-bold text-ink">
                   Buy {selectedOfferDetails.title} for {selectedOfferDetails.price}
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-ink/64">
-                  This is a one-time sandbox payment. Sign in first so a successful purchase can
+                  This is a one-time digital purchase. Sign in first so a successful purchase can
                   unlock 30-day access on your Google account.
                 </p>
                 {paidAccess ? (

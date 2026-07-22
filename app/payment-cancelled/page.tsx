@@ -3,7 +3,7 @@ import { SiteHeader } from "../components/SiteHeader";
 
 export const metadata: Metadata = {
   title: "Payment Cancelled: Sleep Calculator",
-  description: "Your PayPal sandbox payment was cancelled.",
+  description: "Your PayPal payment was cancelled.",
 };
 
 export default function PaymentCancelledPage() {

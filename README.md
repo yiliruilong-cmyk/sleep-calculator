@@ -92,16 +92,20 @@ The client stores the signed-in user's basic profile and credential locally for
 MVP convenience. Pages Functions verify the Google credential before reading or
 writing paid access.
 
-## PayPal Sandbox Checkout
+## PayPal Checkout
 
 PayPal checkout uses Cloudflare Pages Functions so the client secret stays on
 the server side. Configure these Cloudflare Pages environment variables:
 
 ```text
-PAYPAL_CLIENT_ID=your-paypal-sandbox-client-id
-PAYPAL_CLIENT_SECRET=your-paypal-sandbox-client-secret
-PAYPAL_ENVIRONMENT=sandbox
+PAYPAL_CLIENT_ID=your-paypal-client-id
+PAYPAL_CLIENT_SECRET=your-paypal-client-secret
+PAYPAL_ENVIRONMENT=sandbox # use live for production payments
 ```
+
+Use PayPal sandbox credentials while testing. Before accepting real payments,
+replace both PayPal credentials with Live app credentials and set
+`PAYPAL_ENVIRONMENT=live` in Cloudflare Pages.
 
 Paid access is stored in Cloudflare KV and bound to the verified Google account.
 Create a KV namespace and bind it to Pages Functions:

@@ -3,7 +3,7 @@ import { CheckoutPageClient } from "./CheckoutPageClient";
 
 export const metadata: Metadata = {
   title: "Checkout: Sleep Calculator",
-  description: "Choose a Sleep Calculator upgrade and complete PayPal sandbox checkout.",
+  description: "Choose a Sleep Calculator upgrade and complete secure PayPal checkout.",
 };
 
 export default function CheckoutPage() {
