@@ -42,7 +42,7 @@ const menuGroups = [
         description: "Track sleep quality, habits, caffeine, and trends.",
       },
       {
-        href: "/#sleep-products",
+        href: "/checkout",
         title: "Paid Sleep Planner",
         description: "Upgrade from the calculator into a paid plan.",
       },
@@ -119,7 +119,7 @@ export function AppNavigation({ activePath = "/", authSlot }: AppNavigationProps
             </div>
           ))}
           <a
-            href="/#sleep-products"
+            href="/checkout"
             className="rounded px-3 py-2 text-sm font-bold text-ink/70 transition hover:bg-mist hover:text-ink"
           >
             Pricing
@@ -128,7 +128,7 @@ export function AppNavigation({ activePath = "/", authSlot }: AppNavigationProps
 
         <div className="hidden items-center gap-3 lg:flex">
           <a
-            href="/#sleep-products"
+            href="/checkout"
             className="rounded bg-coral px-4 py-2 text-sm font-bold text-white transition hover:bg-coral/90"
           >
             Upgrade
@@ -150,7 +150,7 @@ export function AppNavigation({ activePath = "/", authSlot }: AppNavigationProps
                   </a>
                 )),
               )}
-              <a href="/#sleep-products" className="rounded bg-ink px-4 py-3 text-center text-sm font-bold text-white">
+              <a href="/checkout" className="rounded bg-ink px-4 py-3 text-center text-sm font-bold text-white">
                 Pricing and Upgrade
               </a>
               {authSlot ? <div className="rounded border border-ink/10 p-2">{authSlot}</div> : null}

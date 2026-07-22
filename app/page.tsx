@@ -775,12 +775,6 @@ export default function Home() {
     };
   }, [googleCredential, selectedOffer]);
 
-  function handleOfferClick(offerId: string) {
-    setSelectedOffer(offerId);
-    const targetId = offerId === "7-day-plan" ? "seven-day-plan" : "sleep-products";
-    document.getElementById(targetId)?.scrollIntoView({ block: "start", behavior: "smooth" });
-  }
-
   function handlePrintRoutine() {
     window.print();
   }
@@ -1020,7 +1014,7 @@ export default function Home() {
             </p>
             <button
               type="button"
-              onClick={() => handleOfferClick("routine-pdf")}
+              onClick={() => window.location.assign("/checkout?offer=routine-pdf")}
               className="mt-4 w-full rounded bg-mint px-4 py-3 font-bold text-ink transition hover:bg-mint/90"
             >
               Save this routine as PDF
@@ -1053,7 +1047,7 @@ export default function Home() {
             </div>
             <button
               type="button"
-              onClick={() => handleOfferClick("7-day-plan")}
+              onClick={() => window.location.assign("/checkout?offer=7-day-plan")}
               className="mt-4 w-full rounded border border-ink/14 px-4 py-3 font-bold text-ink transition hover:bg-mist"
             >
               Improve my score
@@ -1203,7 +1197,7 @@ export default function Home() {
               </ul>
               <button
                 type="button"
-                onClick={() => handleOfferClick(starterOffer.id)}
+                onClick={() => window.location.assign(`/checkout?offer=${starterOffer.id}`)}
                 className="mt-auto rounded bg-ink px-4 py-3 font-bold text-white transition hover:bg-ink/90"
               >
                 {starterOffer.cta}
@@ -1234,7 +1228,7 @@ export default function Home() {
                   </ul>
                   <button
                     type="button"
-                    onClick={offer.id === "routine-pdf" ? handlePrintRoutine : () => handleOfferClick(offer.id)}
+                    onClick={() => window.location.assign(`/checkout?offer=${offer.id}`)}
                     className="mt-auto rounded bg-ink px-4 py-3 font-bold text-white transition hover:bg-ink/90"
                   >
                     {offer.cta}
