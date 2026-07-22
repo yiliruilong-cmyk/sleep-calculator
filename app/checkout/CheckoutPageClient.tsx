@@ -446,7 +446,7 @@ export function CheckoutPageClient() {
       </button>
     </div>
   ) : googleClientId ? (
-    <div ref={googleButtonRef} aria-label="Sign in with Google" />
+    <div ref={googleButtonRef} className="min-h-10 min-w-[180px]" aria-label="Sign in with Google" />
   ) : (
     <p className="text-xs font-semibold text-ink/62">Add Google Client ID to enable sign in</p>
   );
