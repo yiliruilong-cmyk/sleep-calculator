@@ -545,14 +545,10 @@ export default function Home() {
         setGoogleCredential(savedCredential);
       } else {
         window.localStorage.removeItem(googleCredentialStorageKey);
-      }
-    } else {
-      const savedUser = window.localStorage.getItem("sleep-calculator-google-user");
-      try {
-        if (savedUser) setGoogleUser(JSON.parse(savedUser));
-      } catch {
         window.localStorage.removeItem("sleep-calculator-google-user");
       }
+    } else {
+      window.localStorage.removeItem("sleep-calculator-google-user");
     }
 
     const savedAccess = window.localStorage.getItem(paidAccessStorageKey);
@@ -1305,6 +1301,15 @@ export default function Home() {
                 ) : null}
               </div>
               <div className="rounded border border-white bg-white p-3">
+                {!googleCredential ? (
+                  <div className="rounded border border-dusk/15 bg-dusk/6 p-4">
+                    <p className="font-bold text-ink">Sign in to continue</p>
+                    <p className="mt-2 text-sm leading-6 text-ink/62">
+                      Use Google sign-in at the top of the page. The PayPal checkout button will
+                      appear here after your account is ready.
+                    </p>
+                  </div>
+                ) : null}
                 <div ref={paypalButtonRef} />
                 {paymentMessage ? (
                   <p
