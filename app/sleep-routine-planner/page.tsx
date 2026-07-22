@@ -11,8 +11,15 @@ export const metadata: Metadata = {
 export default function SleepRoutinePlannerPage() {
   return (
     <main className="min-h-screen">
-      <SiteHeader />
+      <SiteHeader activePath="/sleep-routine-planner" />
       <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+        <nav className="mb-4 text-sm font-semibold text-ink/56" aria-label="Breadcrumb">
+          <a href="/" className="hover:text-ink">
+            Home
+          </a>
+          <span className="mx-2">/</span>
+          <span className="text-ink">Sleep Routine Planner</span>
+        </nav>
         <section className="rounded-lg border border-white/70 bg-white/82 p-5 shadow-soft backdrop-blur md:p-7">
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-mint">Sleep routine planner</p>
           <h1 className="mt-3 max-w-3xl text-4xl font-bold leading-tight text-ink md:text-6xl">

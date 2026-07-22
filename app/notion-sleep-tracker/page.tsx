@@ -25,8 +25,15 @@ const templateBlocks = [
 export default function NotionSleepTrackerPage() {
   return (
     <main className="min-h-screen">
-      <SiteHeader />
+      <SiteHeader activePath="/notion-sleep-tracker" />
       <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+        <nav className="mb-4 text-sm font-semibold text-ink/56" aria-label="Breadcrumb">
+          <a href="/" className="hover:text-ink">
+            Home
+          </a>
+          <span className="mx-2">/</span>
+          <span className="text-ink">Notion Sleep Tracker</span>
+        </nav>
         <section className="grid gap-6 rounded-lg border border-white/70 bg-white/82 p-5 shadow-soft backdrop-blur md:p-7 lg:grid-cols-[0.95fr_1.05fr]">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.18em] text-coral">Notion sleep tracker</p>
