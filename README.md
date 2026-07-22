@@ -91,3 +91,26 @@ https://sleep-calculator-7lj.pages.dev
 This MVP stores the signed-in user's basic profile in browser local storage. Add
 server-side token verification before using Google Sign-In for paid access or
 private user data.
+
+## PayPal Sandbox Checkout
+
+PayPal checkout uses Cloudflare Pages Functions so the client secret stays on
+the server side. Configure these Cloudflare Pages environment variables:
+
+```text
+PAYPAL_CLIENT_ID=your-paypal-sandbox-client-id
+PAYPAL_CLIENT_SECRET=your-paypal-sandbox-client-secret
+PAYPAL_ENVIRONMENT=sandbox
+```
+
+Runtime API routes:
+
+```text
+/api/paypal/config
+/api/paypal/create-order
+/api/paypal/capture-order
+```
+
+The MVP records a successful one-time payment as a 30-day browser-local access
+marker. Before using this for production access, store entitlements in a
+server-side database and bind them to the signed-in Google account.

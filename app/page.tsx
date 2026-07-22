@@ -39,6 +39,21 @@ type GoogleCredentialResponse = {
   credential?: string;
 };
 
+type PayPalOrderData = {
+  orderID: string;
+};
+
+type PayPalButtonsInstance = {
+  render: (container: HTMLElement) => Promise<void>;
+  close?: () => Promise<void>;
+};
+
+type PaidAccess = {
+  offerId: string;
+  orderId: string;
+  expiresAt: number;
+};
+
 declare global {
   interface Window {
     google?: {
@@ -61,11 +76,27 @@ declare global {
         };
       };
     };
+    paypal?: {
+      Buttons: (config: {
+        createOrder: () => Promise<string>;
+        onApprove: (data: PayPalOrderData) => Promise<void>;
+        onCancel: () => void;
+        onError: (error: unknown) => void;
+        style?: {
+          color?: string;
+          layout?: string;
+          shape?: string;
+          tagline?: boolean;
+        };
+      }) => PayPalButtonsInstance;
+    };
   }
 }
 
 const cycleCounts = [4, 5, 6];
 const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
+const paidAccessStorageKey = "sleep-calculator-paid-access";
+const paidAccessDays = 30;
 
 const offers = [
   {
@@ -246,6 +277,40 @@ function parseGoogleCredential(credential: string): GoogleUser | null {
   }
 }
 
+async function loadPayPalSdk() {
+  if (window.paypal) return;
+
+  const existingScript = document.querySelector<HTMLScriptElement>('script[data-paypal-sdk="true"]');
+  if (existingScript) {
+    await new Promise<void>((resolve, reject) => {
+      existingScript.addEventListener("load", () => resolve(), { once: true });
+      existingScript.addEventListener("error", () => reject(new Error("Could not load PayPal SDK.")), {
+        once: true,
+      });
+    });
+    return;
+  }
+
+  const configResponse = await fetch("/api/paypal/config");
+  if (!configResponse.ok) {
+    throw new Error("PayPal is not configured yet.");
+  }
+
+  const config = (await configResponse.json()) as { clientId: string; currency: string };
+  const script = document.createElement("script");
+  script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(
+    config.clientId,
+  )}&currency=${encodeURIComponent(config.currency || "USD")}&intent=capture&components=buttons`;
+  script.async = true;
+  script.dataset.paypalSdk = "true";
+
+  await new Promise<void>((resolve, reject) => {
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Could not load PayPal SDK."));
+    document.head.appendChild(script);
+  });
+}
+
 function getOptionLabel(cycles: number, sleepMinutes: number, goalMinutes: number) {
   if (sleepMinutes < 420) return "Short sleep";
   if (Math.abs(sleepMinutes - goalMinutes) <= 45) return "Best match";
@@ -400,7 +465,13 @@ export default function Home() {
   const [nap, setNap] = useState("none");
   const [screenUse, setScreenUse] = useState(true);
   const [googleUser, setGoogleUser] = useState<GoogleUser | null>(null);
+  const [paidAccess, setPaidAccess] = useState<PaidAccess | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<"idle" | "loading" | "ready" | "processing" | "error">(
+    "idle",
+  );
+  const [paymentMessage, setPaymentMessage] = useState("");
   const googleButtonRef = useRef<HTMLDivElement | null>(null);
+  const paypalButtonRef = useRef<HTMLDivElement | null>(null);
 
   const results = useMemo(() => {
     const wake = toMinutes(wakeTime);
@@ -456,6 +527,13 @@ export default function Home() {
   );
 
   const [selectedOffer, setSelectedOffer] = useState("7-day-plan");
+  const selectedOfferDetails = useMemo(
+    () => offers.find((offer) => offer.id === selectedOffer) || starterOffer,
+    [selectedOffer],
+  );
+  const paidAccessExpiresAt = paidAccess
+    ? new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(new Date(paidAccess.expiresAt))
+    : "";
 
   useEffect(() => {
     const savedUser = window.localStorage.getItem("sleep-calculator-google-user");
@@ -464,6 +542,20 @@ export default function Home() {
         setGoogleUser(JSON.parse(savedUser));
       } catch {
         window.localStorage.removeItem("sleep-calculator-google-user");
+      }
+    }
+
+    const savedAccess = window.localStorage.getItem(paidAccessStorageKey);
+    if (savedAccess) {
+      try {
+        const access = JSON.parse(savedAccess) as PaidAccess;
+        if (access.expiresAt > Date.now()) {
+          setPaidAccess(access);
+        } else {
+          window.localStorage.removeItem(paidAccessStorageKey);
+        }
+      } catch {
+        window.localStorage.removeItem(paidAccessStorageKey);
       }
     }
   }, []);
@@ -515,6 +607,107 @@ export default function Home() {
     script.onload = renderGoogleButton;
     document.head.appendChild(script);
   }, [googleUser]);
+
+  useEffect(() => {
+    let isCancelled = false;
+    let buttons: PayPalButtonsInstance | null = null;
+
+    async function renderPayPalButtons() {
+      if (!paypalButtonRef.current) return;
+
+      setPaymentStatus("loading");
+      setPaymentMessage("Loading secure PayPal checkout...");
+      paypalButtonRef.current.innerHTML = "";
+
+      try {
+        await loadPayPalSdk();
+
+        if (isCancelled || !paypalButtonRef.current || !window.paypal) return;
+
+        buttons = window.paypal.Buttons({
+          style: {
+            color: "gold",
+            layout: "vertical",
+            shape: "rect",
+            tagline: false,
+          },
+          createOrder: async () => {
+            setPaymentStatus("processing");
+            setPaymentMessage("Creating your PayPal order...");
+
+            const response = await fetch("/api/paypal/create-order", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ offerId: selectedOffer }),
+            });
+            const data = await response.json();
+
+            if (!response.ok || !data.id) {
+              throw new Error(data.error || "Could not create PayPal order.");
+            }
+
+            return data.id;
+          },
+          onApprove: async (data) => {
+            setPaymentStatus("processing");
+            setPaymentMessage("Confirming your payment...");
+
+            const response = await fetch("/api/paypal/capture-order", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ orderId: data.orderID }),
+            });
+            const capture = await response.json();
+
+            if (!response.ok || capture.status !== "COMPLETED") {
+              throw new Error(capture.error || "Could not confirm PayPal payment.");
+            }
+
+            const access = {
+              offerId: selectedOffer,
+              orderId: data.orderID,
+              expiresAt: Date.now() + paidAccessDays * 24 * 60 * 60 * 1000,
+            };
+            window.localStorage.setItem(paidAccessStorageKey, JSON.stringify(access));
+            setPaidAccess(access);
+            window.location.assign(`/payment-success?offer=${selectedOffer}`);
+          },
+          onCancel: () => {
+            window.location.assign(`/payment-cancelled?offer=${selectedOffer}`);
+          },
+          onError: (error) => {
+            console.error(error);
+            setPaymentStatus("error");
+            setPaymentMessage("PayPal checkout is unavailable right now. Please try again.");
+          },
+        });
+
+        await buttons.render(paypalButtonRef.current);
+
+        if (!isCancelled) {
+          setPaymentStatus("ready");
+          setPaymentMessage("");
+        }
+      } catch (error) {
+        console.error(error);
+        if (!isCancelled) {
+          setPaymentStatus("error");
+          setPaymentMessage(error instanceof Error ? error.message : "Could not load PayPal checkout.");
+        }
+      }
+    }
+
+    renderPayPalButtons();
+
+    return () => {
+      isCancelled = true;
+      buttons?.close?.();
+    };
+  }, [selectedOffer]);
 
   function handleOfferClick(offerId: string) {
     setSelectedOffer(offerId);
@@ -992,32 +1185,64 @@ export default function Home() {
 
             <div className="grid gap-3 md:grid-cols-3 lg:grid-cols-1">
               {upgradeOffers.map((offer) => (
-              <article
-                key={offer.id}
-                className={`flex min-h-full flex-col rounded border p-4 ${
-                  selectedOffer === offer.id ? "border-dusk bg-dusk/6" : "border-ink/10 bg-white"
-                }`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <span className="rounded bg-ink px-2 py-1 text-xs font-bold text-white">{offer.badge}</span>
-                  <span className="text-lg font-bold text-ink">{offer.price}</span>
-                </div>
-                <h3 className="mt-4 text-lg font-bold text-ink">{offer.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-ink/64">{offer.description}</p>
-                <ul className="mt-3 flex flex-col gap-2 text-sm leading-6 text-ink/68">
-                  {offer.bullets.map((bullet) => (
-                    <li key={bullet}>{bullet}</li>
-                  ))}
-                </ul>
-                <button
-                  type="button"
-                  onClick={offer.id === "routine-pdf" ? handlePrintRoutine : () => handleOfferClick(offer.id)}
-                  className="mt-auto rounded bg-ink px-4 py-3 font-bold text-white transition hover:bg-ink/90"
+                <article
+                  key={offer.id}
+                  className={`flex min-h-full flex-col rounded border p-4 ${
+                    selectedOffer === offer.id ? "border-dusk bg-dusk/6" : "border-ink/10 bg-white"
+                  }`}
                 >
-                  {offer.cta}
-                </button>
-              </article>
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="rounded bg-ink px-2 py-1 text-xs font-bold text-white">{offer.badge}</span>
+                    <span className="text-lg font-bold text-ink">{offer.price}</span>
+                  </div>
+                  <h3 className="mt-4 text-lg font-bold text-ink">{offer.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-ink/64">{offer.description}</p>
+                  <ul className="mt-3 flex flex-col gap-2 text-sm leading-6 text-ink/68">
+                    {offer.bullets.map((bullet) => (
+                      <li key={bullet}>{bullet}</li>
+                    ))}
+                  </ul>
+                  <button
+                    type="button"
+                    onClick={offer.id === "routine-pdf" ? handlePrintRoutine : () => handleOfferClick(offer.id)}
+                    className="mt-auto rounded bg-ink px-4 py-3 font-bold text-white transition hover:bg-ink/90"
+                  >
+                    {offer.cta}
+                  </button>
+                </article>
               ))}
+            </div>
+          </div>
+
+          <div className="mt-5 rounded border border-ink/10 bg-mist p-4">
+            <div className="grid gap-4 lg:grid-cols-[0.86fr_1.14fr] lg:items-start">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.14em] text-dusk">PayPal sandbox checkout</p>
+                <h3 className="mt-2 text-xl font-bold text-ink">
+                  Buy {selectedOfferDetails.title} for {selectedOfferDetails.price}
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-ink/64">
+                  This is a one-time sandbox payment. A successful purchase unlocks a 30-day monthly
+                  access marker in this browser for MVP validation.
+                </p>
+                {paidAccess ? (
+                  <p className="mt-3 rounded border border-mint/25 bg-mint/10 px-3 py-2 text-sm font-semibold text-ink">
+                    Monthly access active until {paidAccessExpiresAt}.
+                  </p>
+                ) : null}
+              </div>
+              <div className="rounded border border-white bg-white p-3">
+                <div ref={paypalButtonRef} />
+                {paymentStatus === "loading" || paymentStatus === "processing" || paymentStatus === "error" ? (
+                  <p
+                    className={`mt-3 text-sm leading-6 ${
+                      paymentStatus === "error" ? "text-coral" : "text-ink/60"
+                    }`}
+                  >
+                    {paymentMessage}
+                  </p>
+                ) : null}
+              </div>
             </div>
           </div>
         </section>
