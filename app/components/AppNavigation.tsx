@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { defaultLocale, getLocaleInfo, locales, type LocaleCode } from "../lib/i18n";
 
 const navItems = [
   { href: "/", label: "睡眠工具" },
@@ -13,9 +14,12 @@ const navItems = [
 type AppNavigationProps = {
   activePath?: string;
   authSlot?: ReactNode;
+  locale?: LocaleCode;
 };
 
-export function AppNavigation({ activePath = "/", authSlot }: AppNavigationProps) {
+export function AppNavigation({ activePath = "/", authSlot, locale = defaultLocale }: AppNavigationProps) {
+  const activeLocale = getLocaleInfo(locale);
+
   return (
     <header className="sticky top-0 z-30 border-b border-ink/10 bg-white/92 backdrop-blur">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
@@ -53,6 +57,26 @@ export function AppNavigation({ activePath = "/", authSlot }: AppNavigationProps
         <div className="flex min-w-0 items-center justify-end gap-2">
           {authSlot ? <div className="min-w-[180px] max-w-[280px] overflow-hidden">{authSlot}</div> : null}
 
+          <details className="group relative hidden sm:block">
+            <summary className="list-none rounded border border-ink/10 px-3 py-2 text-sm font-bold text-ink transition hover:bg-mist">
+              {activeLocale.nativeLabel}
+            </summary>
+            <div className="absolute right-0 top-full mt-2 w-44 rounded-lg border border-ink/10 bg-white p-2 shadow-soft">
+              {locales.map((item) => (
+                <a
+                  key={item.code}
+                  href={item.path}
+                  hrefLang={item.htmlLang}
+                  className={`block rounded px-3 py-2 text-sm font-bold transition hover:bg-mist ${
+                    item.code === activeLocale.code ? "text-dusk" : "text-ink/70"
+                  }`}
+                >
+                  {item.nativeLabel}
+                </a>
+              ))}
+            </div>
+          </details>
+
           <details className="group relative md:hidden">
             <summary className="list-none rounded border border-ink/10 px-3 py-2 text-sm font-bold text-ink">
               Menu
@@ -67,6 +91,18 @@ export function AppNavigation({ activePath = "/", authSlot }: AppNavigationProps
                 <a href="/checkout" className="rounded bg-ink px-4 py-3 text-center text-sm font-bold text-white">
                   定价与升级
                 </a>
+                <div className="grid gap-2 border-t border-ink/10 pt-2">
+                  {locales.map((item) => (
+                    <a
+                      key={item.code}
+                      href={item.path}
+                      hrefLang={item.htmlLang}
+                      className="rounded bg-white px-3 py-2 text-sm font-bold text-ink/70"
+                    >
+                      {item.nativeLabel}
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
           </details>
