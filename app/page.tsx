@@ -22,14 +22,6 @@ type SleepScore = {
   improvements: string[];
 };
 
-type PlanDay = {
-  day: number;
-  title: string;
-  focus: string;
-  evening: string[];
-  morning: string;
-};
-
 type GoogleUser = {
   email: string;
   name: string;
@@ -38,21 +30,6 @@ type GoogleUser = {
 
 type GoogleCredentialResponse = {
   credential?: string;
-};
-
-type PayPalOrderData = {
-  orderID: string;
-};
-
-type PayPalButtonsInstance = {
-  render: (container: HTMLElement) => Promise<void>;
-  close?: () => Promise<void>;
-};
-
-type PaidAccess = {
-  offerId: string;
-  orderId: string;
-  expiresAt: number;
 };
 
 declare global {
@@ -77,149 +54,13 @@ declare global {
         };
       };
     };
-    paypal?: {
-      Buttons: (config: {
-        createOrder: () => Promise<string>;
-        onApprove: (data: PayPalOrderData) => Promise<void>;
-        onCancel: () => void;
-        onError: (error: unknown) => void;
-        style?: {
-          color?: string;
-          layout?: string;
-          shape?: string;
-          tagline?: boolean;
-        };
-      }) => PayPalButtonsInstance;
-    };
   }
 }
 
 const cycleCounts = [4, 5, 6];
 const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
 const googleCredentialStorageKey = "sleep-calculator-google-credential";
-const paidAccessStorageKey = "sleep-calculator-paid-access";
-
-const offers = [
-  {
-    id: "7-day-plan",
-    title: "7-Day Better Sleep Plan",
-    price: "$7",
-    description: "A simple daily reset plan built around your bedtime, wake-up time, and evening triggers.",
-    bullets: ["Daily wind-down checklist", "Morning reset prompts", "Caffeine and screen timing guide"],
-    cta: "Start the 7-day plan",
-    badge: "Best starter",
-  },
-  {
-    id: "routine-pdf",
-    title: "Personalized Sleep Routine PDF",
-    price: "$5",
-    description: "Turn tonight's result into a printable routine you can keep beside your bed.",
-    bullets: ["Bedtime and wake-up targets", "Step-by-step routine", "Personal notes from your inputs"],
-    cta: "Save routine as PDF",
-    badge: "Instant value",
-  },
-  {
-    id: "paid-planner",
-    title: "Paid Sleep Planner",
-    price: "$19",
-    description: "A lightweight planner for people who want to plan, track, and adjust their sleep week by week.",
-    bullets: ["Weekly planning pages", "Habit score tracking", "Sleep debt review prompts"],
-    cta: "Join planner waitlist",
-    badge: "Premium",
-  },
-  {
-    id: "notion-template",
-    title: "Notion Sleep Tracker Template",
-    price: "$9",
-    description: "Track bedtime, wake-up time, sleep quality, caffeine, screens, and weekly trends in Notion.",
-    bullets: ["Sleep log database", "Weekly score dashboard", "Habit experiments library"],
-    cta: "Get Notion template",
-    badge: "Template",
-  },
-];
-
-const starterOffer = offers[0];
-const upgradeOffers = offers.slice(1);
-
-const sevenDayPlan: PlanDay[] = [
-  {
-    day: 1,
-    title: "Set Your Anchor",
-    focus: "Lock in one wake-up time and use it as the anchor for the week.",
-    evening: [
-      "Set tomorrow's wake-up alarm before your wind-down starts.",
-      "Put your phone charger outside arm's reach.",
-      "Write down one thing that could make bedtime slip later.",
-    ],
-    morning: "Get light within the first hour after waking, even if it is only a short walk or bright window time.",
-  },
-  {
-    day: 2,
-    title: "Build the Wind-Down Cue",
-    focus: "Teach your body that the night routine has started.",
-    evening: [
-      "Dim lights at the start of your routine.",
-      "Choose one low-effort task: shower, light stretching, or setting clothes out.",
-      "Keep the final 15 minutes predictable and quiet.",
-    ],
-    morning: "Rate your sleep quality from 1 to 5 and note what helped you fall asleep.",
-  },
-  {
-    day: 3,
-    title: "Move Stimulation Earlier",
-    focus: "Reduce the inputs that keep your brain alert late at night.",
-    evening: [
-      "Create a 30-minute screen cutoff before bed.",
-      "Move work, email, and planning tasks out of the last hour.",
-      "If you need audio, choose something familiar and calm.",
-    ],
-    morning: "Check whether the screen cutoff changed how quickly you felt sleepy.",
-  },
-  {
-    day: 4,
-    title: "Protect Your Sleep Window",
-    focus: "Make your recommended bedtime easier to keep.",
-    evening: [
-      "Set a reminder 15 minutes before your routine starts.",
-      "Avoid starting a new episode, task, or conversation near bedtime.",
-      "Prepare water, alarm, and room temperature before getting in bed.",
-    ],
-    morning: "Compare your planned bedtime with your actual bedtime and write the gap in minutes.",
-  },
-  {
-    day: 5,
-    title: "Clean Up Caffeine and Naps",
-    focus: "Remove common reasons your natural sleepiness arrives late.",
-    evening: [
-      "Use your last caffeine cutoff as an experiment, not a rule.",
-      "Keep naps short and earlier in the day when possible.",
-      "If you are not sleepy, stay calm and keep the room low-stimulation.",
-    ],
-    morning: "Note caffeine timing, nap timing, and whether your sleep felt lighter or deeper.",
-  },
-  {
-    day: 6,
-    title: "Review Your Pattern",
-    focus: "Look for the one change that produced the clearest benefit.",
-    evening: [
-      "Pick the best habit from Days 1-5 and repeat it exactly.",
-      "Remove one habit that did not help.",
-      "Keep the same wake-up time tomorrow.",
-    ],
-    morning: "Choose your top sleep trigger: timing, screens, caffeine, naps, light, noise, or stress.",
-  },
-  {
-    day: 7,
-    title: "Make It Repeatable",
-    focus: "Turn the week into a simple default routine.",
-    evening: [
-      "Write your default bedtime routine in three steps.",
-      "Choose one backup plan for busy nights.",
-      "Set your next 7-day wake-up target.",
-    ],
-    morning: "Keep the routine that improved your score and retest your sleep habit score next week.",
-  },
-];
+const planSnapshotStorageKey = "sleep-calculator-plan-snapshot";
 
 const modeCopy: Record<Mode, string> = {
   wake: "I want to wake up at...",
@@ -276,40 +117,6 @@ function parseGoogleCredential(credential: string): GoogleUser | null {
   } catch {
     return null;
   }
-}
-
-async function loadPayPalSdk() {
-  if (window.paypal) return;
-
-  const existingScript = document.querySelector<HTMLScriptElement>('script[data-paypal-sdk="true"]');
-  if (existingScript) {
-    await new Promise<void>((resolve, reject) => {
-      existingScript.addEventListener("load", () => resolve(), { once: true });
-      existingScript.addEventListener("error", () => reject(new Error("Could not load PayPal SDK.")), {
-        once: true,
-      });
-    });
-    return;
-  }
-
-  const configResponse = await fetch("/api/paypal/config");
-  if (!configResponse.ok) {
-    throw new Error("PayPal is not configured yet.");
-  }
-
-  const config = (await configResponse.json()) as { clientId: string; currency: string };
-  const script = document.createElement("script");
-  script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(
-    config.clientId,
-  )}&currency=${encodeURIComponent(config.currency || "USD")}&intent=capture&components=buttons`;
-  script.async = true;
-  script.dataset.paypalSdk = "true";
-
-  await new Promise<void>((resolve, reject) => {
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Could not load PayPal SDK."));
-    document.head.appendChild(script);
-  });
 }
 
 function getOptionLabel(cycles: number, sleepMinutes: number, goalMinutes: number) {
@@ -466,14 +273,7 @@ export default function Home() {
   const [nap, setNap] = useState("none");
   const [screenUse, setScreenUse] = useState(true);
   const [googleUser, setGoogleUser] = useState<GoogleUser | null>(null);
-  const [googleCredential, setGoogleCredential] = useState("");
-  const [paidAccess, setPaidAccess] = useState<PaidAccess | null>(null);
-  const [paymentStatus, setPaymentStatus] = useState<"idle" | "loading" | "ready" | "processing" | "error">(
-    "idle",
-  );
-  const [paymentMessage, setPaymentMessage] = useState("");
   const googleButtonRef = useRef<HTMLDivElement | null>(null);
-  const paypalButtonRef = useRef<HTMLDivElement | null>(null);
 
   const results = useMemo(() => {
     const wake = toMinutes(wakeTime);
@@ -528,42 +328,18 @@ export default function Home() {
     [caffeine, latency, nap, routineLength, screenUse, sleepGoal],
   );
 
-  const [selectedOffer, setSelectedOffer] = useState("7-day-plan");
-  const selectedOfferDetails = useMemo(
-    () => offers.find((offer) => offer.id === selectedOffer) || starterOffer,
-    [selectedOffer],
-  );
-  const paidAccessExpiresAt = paidAccess
-    ? new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(new Date(paidAccess.expiresAt))
-    : "";
-
   useEffect(() => {
     const savedCredential = window.localStorage.getItem(googleCredentialStorageKey);
     if (savedCredential) {
       const user = parseGoogleCredential(savedCredential);
       if (user) {
         setGoogleUser(user);
-        setGoogleCredential(savedCredential);
       } else {
         window.localStorage.removeItem(googleCredentialStorageKey);
         window.localStorage.removeItem("sleep-calculator-google-user");
       }
     } else {
       window.localStorage.removeItem("sleep-calculator-google-user");
-    }
-
-    const savedAccess = window.localStorage.getItem(paidAccessStorageKey);
-    if (savedAccess) {
-      try {
-        const access = JSON.parse(savedAccess) as PaidAccess;
-        if (access.expiresAt > Date.now()) {
-          setPaidAccess(access);
-        } else {
-          window.localStorage.removeItem(paidAccessStorageKey);
-        }
-      } catch {
-        window.localStorage.removeItem(paidAccessStorageKey);
-      }
     }
   }, []);
 
@@ -585,7 +361,6 @@ export default function Home() {
           window.localStorage.setItem(googleCredentialStorageKey, response.credential);
           window.localStorage.setItem("sleep-calculator-google-user", JSON.stringify(user));
           setGoogleUser(user);
-          setGoogleCredential(response.credential);
         },
       });
       window.google.accounts.id.renderButton(googleButtonRef.current, {
@@ -617,176 +392,43 @@ export default function Home() {
     document.head.appendChild(script);
   }, [googleUser]);
 
-  useEffect(() => {
-    if (!googleCredential) return;
-
-    let isCancelled = false;
-
-    async function refreshAccess() {
-      try {
-        const response = await fetch("/api/access/me", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ googleCredential }),
-        });
-        const data = await response.json();
-
-        if (isCancelled) return;
-
-        if (!response.ok) {
-          if (response.status === 401) {
-            window.localStorage.removeItem(googleCredentialStorageKey);
-            window.localStorage.removeItem("sleep-calculator-google-user");
-            window.localStorage.removeItem(paidAccessStorageKey);
-            setGoogleCredential("");
-            setGoogleUser(null);
-            setPaidAccess(null);
-            setPaymentMessage("Please sign in with Google again before purchasing.");
-          }
-          return;
-        }
-
-        if (data.active && data.access) {
-          window.localStorage.setItem(paidAccessStorageKey, JSON.stringify(data.access));
-          setPaidAccess(data.access);
-        } else {
-          window.localStorage.removeItem(paidAccessStorageKey);
-          setPaidAccess(null);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    refreshAccess();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [googleCredential]);
-
-  useEffect(() => {
-    let isCancelled = false;
-    let buttons: PayPalButtonsInstance | null = null;
-
-    async function renderPayPalButtons() {
-      if (!paypalButtonRef.current) return;
-
-      if (!googleCredential) {
-        paypalButtonRef.current.innerHTML = "";
-        setPaymentStatus("idle");
-        setPaymentMessage("Sign in with Google first so your purchase can be saved to your account.");
-        return;
-      }
-
-      setPaymentStatus("loading");
-      setPaymentMessage("Loading secure PayPal checkout...");
-      paypalButtonRef.current.innerHTML = "";
-
-      try {
-        await loadPayPalSdk();
-
-        if (isCancelled || !paypalButtonRef.current || !window.paypal) return;
-
-        buttons = window.paypal.Buttons({
-          style: {
-            color: "gold",
-            layout: "vertical",
-            shape: "rect",
-            tagline: false,
-          },
-          createOrder: async () => {
-            setPaymentStatus("processing");
-            setPaymentMessage("Creating your PayPal order...");
-
-            const response = await fetch("/api/paypal/create-order", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ offerId: selectedOffer }),
-            });
-            const data = await response.json();
-
-            if (!response.ok || !data.id) {
-              throw new Error(data.error || "Could not create PayPal order.");
-            }
-
-            return data.id;
-          },
-          onApprove: async (data) => {
-            setPaymentStatus("processing");
-            setPaymentMessage("Confirming your payment...");
-
-            const response = await fetch("/api/paypal/capture-order", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                googleCredential,
-                offerId: selectedOffer,
-                orderId: data.orderID,
-              }),
-            });
-            const capture = await response.json();
-
-            if (!response.ok || capture.status !== "COMPLETED" || !capture.access) {
-              throw new Error(capture.error || "Could not confirm PayPal payment.");
-            }
-
-            const access = capture.access as PaidAccess;
-            window.localStorage.setItem(paidAccessStorageKey, JSON.stringify(access));
-            setPaidAccess(access);
-            window.location.assign(`/payment-success?offer=${selectedOffer}`);
-          },
-          onCancel: () => {
-            window.location.assign(`/payment-cancelled?offer=${selectedOffer}`);
-          },
-          onError: (error) => {
-            console.error(error);
-            setPaymentStatus("error");
-            setPaymentMessage("PayPal checkout is unavailable right now. Please try again.");
-          },
-        });
-
-        await buttons.render(paypalButtonRef.current);
-
-        if (!isCancelled) {
-          setPaymentStatus("ready");
-          setPaymentMessage("");
-        }
-      } catch (error) {
-        console.error(error);
-        if (!isCancelled) {
-          setPaymentStatus("error");
-          setPaymentMessage(error instanceof Error ? error.message : "Could not load PayPal checkout.");
-        }
-      }
-    }
-
-    renderPayPalButtons();
-
-    return () => {
-      isCancelled = true;
-      buttons?.close?.();
-    };
-  }, [googleCredential, selectedOffer]);
-
   function handlePrintRoutine() {
     window.print();
+  }
+
+  function savePlanSnapshot() {
+    window.localStorage.setItem(
+      planSnapshotStorageKey,
+      JSON.stringify({
+        bedtime: formatTime(best.bedtime),
+        wakeTime: formatTime(best.wakeTime),
+        sleepDuration: formatDuration(best.sleepMinutes),
+        timeInBed: formatDuration(best.timeInBed),
+        routineStart: formatTime(addMinutes(best.bedtime, -routineLength)),
+        score: sleepScore.score,
+        scoreLabel: sleepScore.label,
+        improvements: sleepScore.improvements,
+        notes: routine.notes,
+        savedAt: Date.now(),
+      }),
+    );
+  }
+
+  function openSevenDayPlan() {
+    savePlanSnapshot();
+    window.location.assign("/7-day-better-sleep-plan");
+  }
+
+  function openCheckout() {
+    savePlanSnapshot();
+    window.location.assign("/checkout?offer=7-day-plan");
   }
 
   function handleGoogleSignOut() {
     window.localStorage.removeItem(googleCredentialStorageKey);
     window.localStorage.removeItem("sleep-calculator-google-user");
-    window.localStorage.removeItem(paidAccessStorageKey);
     window.google?.accounts.id.disableAutoSelect();
-    setGoogleCredential("");
     setGoogleUser(null);
-    setPaidAccess(null);
   }
 
   const authSlot = googleUser ? (
@@ -1014,10 +656,10 @@ export default function Home() {
             </p>
             <button
               type="button"
-              onClick={() => window.location.assign("/checkout?offer=routine-pdf")}
+              onClick={openSevenDayPlan}
               className="mt-4 w-full rounded bg-mint px-4 py-3 font-bold text-ink transition hover:bg-mint/90"
             >
-              Save this routine as PDF
+              View the 7-day plan
             </button>
           </section>
 
@@ -1047,7 +689,7 @@ export default function Home() {
             </div>
             <button
               type="button"
-              onClick={() => window.location.assign("/checkout?offer=7-day-plan")}
+              onClick={openSevenDayPlan}
               className="mt-4 w-full rounded border border-ink/14 px-4 py-3 font-bold text-ink transition hover:bg-mist"
             >
               Improve my score
@@ -1158,246 +800,35 @@ export default function Home() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-        <section id="sleep-products" className="mb-6 rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <section id="seven-day-plan" className="mb-6 rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
+          <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-coral">
-                Sleep planning upgrades
+                7-day plan
               </p>
-              <h2 className="mt-2 text-2xl font-bold text-ink">Start with the 7-Day Better Sleep Plan</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-ink/66">
-                Keep the free calculator open to everyone, then use the $7 plan as the first paid
-                step for users who want a simple structure to follow this week.
-              </p>
-            </div>
-            <div className="rounded border border-mint/25 bg-mint/8 px-4 py-3">
-              <p className="text-sm font-bold text-ink">Selected</p>
-              <p className="text-sm text-ink/62">
-                {offers.find((offer) => offer.id === selectedOffer)?.title}
+              <h2 className="mt-2 text-2xl font-bold text-ink">Turn tonight&apos;s result into a simple week.</h2>
+              <p className="mt-3 max-w-3xl text-sm leading-7 text-ink/66">
+                Your current result suggests getting in bed around{" "}
+                <strong className="text-ink">{formatTime(best.bedtime)}</strong> and waking around{" "}
+                <strong className="text-ink">{formatTime(best.wakeTime)}</strong>. The 7-day plan turns
+                that timing into daily actions for consistency, screen timing, caffeine, naps, and morning reset.
               </p>
             </div>
-          </div>
-
-          <div className="mt-5 grid gap-4 lg:grid-cols-[1.05fr_1fr]">
-            <article
-              className={`flex min-h-full flex-col rounded border p-5 ${
-                selectedOffer === starterOffer.id ? "border-dusk bg-dusk/6" : "border-ink/10 bg-white"
-              }`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <span className="rounded bg-ink px-2 py-1 text-xs font-bold text-white">{starterOffer.badge}</span>
-                <span className="text-3xl font-bold text-ink">{starterOffer.price}</span>
-              </div>
-              <h3 className="mt-4 text-2xl font-bold text-ink">{starterOffer.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-ink/64">{starterOffer.description}</p>
-              <ul className="mt-4 flex flex-col gap-2 text-sm leading-6 text-ink/68">
-                {starterOffer.bullets.map((bullet) => (
-                  <li key={bullet}>{bullet}</li>
-                ))}
-              </ul>
+            <div className="grid gap-2 sm:grid-cols-2 lg:w-[360px] lg:grid-cols-1">
               <button
                 type="button"
-                onClick={() => window.location.assign(`/checkout?offer=${starterOffer.id}`)}
-                className="mt-auto rounded bg-ink px-4 py-3 font-bold text-white transition hover:bg-ink/90"
+                onClick={openSevenDayPlan}
+                className="rounded bg-ink px-4 py-3 text-center font-bold text-white transition hover:bg-ink/90"
               >
-                {starterOffer.cta}
+                Preview the 7-day plan
               </button>
-              <p className="mt-3 text-xs leading-5 text-ink/50">
-                Early-stage validation price. Later this can become the front door to a larger bundle.
-              </p>
-            </article>
-
-            <div className="grid gap-3 md:grid-cols-3 lg:grid-cols-1">
-              {upgradeOffers.map((offer) => (
-                <article
-                  key={offer.id}
-                  className={`flex min-h-full flex-col rounded border p-4 ${
-                    selectedOffer === offer.id ? "border-dusk bg-dusk/6" : "border-ink/10 bg-white"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <span className="rounded bg-ink px-2 py-1 text-xs font-bold text-white">{offer.badge}</span>
-                    <span className="text-lg font-bold text-ink">{offer.price}</span>
-                  </div>
-                  <h3 className="mt-4 text-lg font-bold text-ink">{offer.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-ink/64">{offer.description}</p>
-                  <ul className="mt-3 flex flex-col gap-2 text-sm leading-6 text-ink/68">
-                    {offer.bullets.map((bullet) => (
-                      <li key={bullet}>{bullet}</li>
-                    ))}
-                  </ul>
-                  <button
-                    type="button"
-                    onClick={() => window.location.assign(`/checkout?offer=${offer.id}`)}
-                    className="mt-auto rounded bg-ink px-4 py-3 font-bold text-white transition hover:bg-ink/90"
-                  >
-                    {offer.cta}
-                  </button>
-                </article>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-5 rounded border border-ink/10 bg-mist p-4">
-            <div className="grid gap-4 lg:grid-cols-[0.86fr_1.14fr] lg:items-start">
-              <div>
-                <p className="text-sm font-bold uppercase tracking-[0.14em] text-dusk">Secure PayPal checkout</p>
-                <h3 className="mt-2 text-xl font-bold text-ink">
-                  Buy {selectedOfferDetails.title} for {selectedOfferDetails.price}
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-ink/64">
-                  This is a one-time digital purchase. Sign in first so a successful purchase can
-                  unlock 30-day access on your Google account.
-                </p>
-                {paidAccess ? (
-                  <p className="mt-3 rounded border border-mint/25 bg-mint/10 px-3 py-2 text-sm font-semibold text-ink">
-                    Account access active until {paidAccessExpiresAt}.
-                  </p>
-                ) : null}
-              </div>
-              <div className="rounded border border-white bg-white p-3">
-                {!googleCredential ? (
-                  <div className="rounded border border-dusk/15 bg-dusk/6 p-4">
-                    <p className="font-bold text-ink">Sign in to continue</p>
-                    <p className="mt-2 text-sm leading-6 text-ink/62">
-                      Use Google sign-in at the top of the page. The PayPal checkout button will
-                      appear here after your account is ready.
-                    </p>
-                  </div>
-                ) : null}
-                <div ref={paypalButtonRef} />
-                {paymentMessage ? (
-                  <p
-                    className={`mt-3 text-sm leading-6 ${
-                      paymentStatus === "error" ? "text-coral" : "text-ink/60"
-                    }`}
-                  >
-                    {paymentMessage}
-                  </p>
-                ) : null}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="free-tools" className="mb-6 rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-sm font-bold uppercase tracking-[0.16em] text-mint">
-                More free sleep tools
-              </p>
-              <h2 className="mt-2 text-2xl font-bold text-ink">Explore focused sleep planners</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-ink/66">
-                These pages target specific sleep questions while pointing users back to the main
-                calculator, 7-day plan, and paid template offers.
-              </p>
-            </div>
-            <a
-              href="/sleep-routine-planner"
-              className="rounded bg-ink px-4 py-3 text-center font-bold text-white transition hover:bg-ink/90"
-            >
-              Start with routine planner
-            </a>
-          </div>
-
-          <div className="mt-5 grid gap-4 md:grid-cols-3">
-            {[
-              {
-                href: "/sleep-debt-calculator",
-                title: "Sleep Debt Calculator",
-                description:
-                  "Estimate missed sleep across the week and build a realistic recovery plan.",
-              },
-              {
-                href: "/sleep-routine-planner",
-                title: "Sleep Routine Planner",
-                description:
-                  "Create a wind-down schedule from your wake-up time, sleep target, and evening style.",
-              },
-              {
-                href: "/notion-sleep-tracker",
-                title: "Notion Sleep Tracker",
-                description:
-                  "Preview a tracker template for bedtime, wake-up time, quality, caffeine, and trends.",
-              },
-            ].map((tool) => (
-              <a
-                key={tool.href}
-                href={tool.href}
-                className="rounded border border-ink/10 bg-mist p-4 transition hover:border-dusk hover:bg-dusk/6"
-              >
-                <h3 className="text-lg font-bold text-ink">{tool.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-ink/64">{tool.description}</p>
-                <span className="mt-4 inline-flex text-sm font-bold text-dusk">Open tool</span>
-              </a>
-            ))}
-          </div>
-        </section>
-
-        <section id="seven-day-plan" className="mb-6 rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
-          <div className="grid gap-5 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
-            <div>
-              <p className="text-sm font-bold uppercase tracking-[0.16em] text-mint">
-                Included plan
-              </p>
-              <h2 className="mt-2 text-2xl font-bold text-ink">7-Day Better Sleep Plan</h2>
-              <p className="mt-3 text-sm leading-7 text-ink/66">
-                Use this plan with your current result: get in bed around{" "}
-                <strong className="text-ink">{formatTime(best.bedtime)}</strong> and aim to wake around{" "}
-                <strong className="text-ink">{formatTime(best.wakeTime)}</strong>. The plan is designed
-                to improve consistency first, then reduce the habits that make bedtime slide later.
-              </p>
-              <div className="mt-4 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-                <div className="rounded border border-ink/10 bg-mist p-4">
-                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-ink/45">Current score</p>
-                  <p className="mt-1 text-3xl font-bold text-ink">{sleepScore.score}</p>
-                </div>
-                <div className="rounded border border-ink/10 bg-mist p-4">
-                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-ink/45">Routine start</p>
-                  <p className="mt-1 text-2xl font-bold text-ink">{formatTime(addMinutes(best.bedtime, -routineLength))}</p>
-                </div>
-                <div className="rounded border border-ink/10 bg-mist p-4">
-                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-ink/45">Daily target</p>
-                  <p className="mt-1 text-2xl font-bold text-ink">{formatDuration(best.sleepMinutes)}</p>
-                </div>
-              </div>
               <button
                 type="button"
-                onClick={handlePrintRoutine}
-                className="mt-4 w-full rounded bg-ink px-4 py-3 font-bold text-white transition hover:bg-ink/90"
+                onClick={openCheckout}
+                className="rounded border border-ink/14 px-4 py-3 text-center font-bold text-ink transition hover:bg-mist"
               >
-                Print the 7-day plan
+                Get full plan for $7
               </button>
-            </div>
-
-            <div className="grid gap-3">
-              {sevenDayPlan.map((day) => (
-                <article key={day.day} className="rounded border border-ink/10 bg-mist p-4">
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <p className="text-sm font-bold text-coral">Day {day.day}</p>
-                      <h3 className="mt-1 text-xl font-bold text-ink">{day.title}</h3>
-                    </div>
-                    <span className="rounded bg-white px-3 py-1 text-sm font-bold text-ink/68">
-                      {day.focus}
-                    </span>
-                  </div>
-                  <div className="mt-4 grid gap-3 md:grid-cols-[1fr_0.78fr]">
-                    <div className="rounded border border-white bg-white p-3">
-                      <p className="font-bold text-ink">Tonight checklist</p>
-                      <ul className="mt-2 flex flex-col gap-2 text-sm leading-6 text-ink/68">
-                        {day.evening.map((item) => (
-                          <li key={item}>{item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="rounded border border-white bg-white p-3">
-                      <p className="font-bold text-ink">Morning note</p>
-                      <p className="mt-2 text-sm leading-6 text-ink/68">{day.morning}</p>
-                    </div>
-                  </div>
-                </article>
-              ))}
             </div>
           </div>
         </section>
@@ -1488,27 +919,30 @@ export default function Home() {
           <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-mint">
-                Free lead magnet
+                7-day plan
               </p>
-              <h2 className="mt-2 text-2xl font-bold">Preview the 7-day better sleep plan</h2>
+              <h2 className="mt-2 text-2xl font-bold">Ready to turn this into a week-long routine?</h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-white/68">
-                Capture early demand before connecting payments. Send a sample routine, then offer
-                the full planner, PDF, or Notion tracker.
+                Keep the calculator free, then use the 7-day plan when you want a structured reset
+                for bedtime consistency, screens, caffeine, naps, and morning momentum.
               </p>
             </div>
-            <form className="grid gap-2 sm:grid-cols-[260px_auto]" aria-label="Sleep reset waitlist">
-              <input
-                type="email"
-                placeholder="Email address"
-                className="rounded border border-white/12 bg-white px-3 py-3 text-ink outline-none focus:border-mint"
-              />
+            <div className="grid gap-2 sm:grid-cols-2">
               <button
                 type="button"
-                className="rounded bg-mint px-4 py-3 font-bold text-ink transition hover:bg-mint/90"
+                onClick={openSevenDayPlan}
+                className="rounded bg-mint px-4 py-3 text-center font-bold text-ink transition hover:bg-mint/90"
               >
-                Send me the preview
+                Preview the plan
               </button>
-            </form>
+              <button
+                type="button"
+                onClick={openCheckout}
+                className="rounded border border-white/18 px-4 py-3 text-center font-bold text-white transition hover:bg-white/10"
+              >
+                Get full plan for $7
+              </button>
+            </div>
           </div>
         </section>
 

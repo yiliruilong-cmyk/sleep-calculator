@@ -76,34 +76,24 @@ const offers = [
     id: "7-day-plan",
     title: "7-Day Better Sleep Plan",
     price: "$7",
-    description: "A simple daily reset plan built around your bedtime, wake-up time, and evening triggers.",
-    bullets: ["Daily wind-down checklist", "Morning reset prompts", "Caffeine and screen timing guide"],
+    description:
+      "A one-time digital plan that turns your sleep calculator result into a practical 7-day reset.",
+    bullets: [
+      "Seven daily sleep reset pages",
+      "Personalized bedtime, wake-up, and routine targets",
+      "Sleep habit score worksheet",
+      "Printable PDF-friendly layout",
+      "Notion sleep tracker setup guide",
+    ],
     badge: "Best starter",
   },
-  {
-    id: "routine-pdf",
-    title: "Personalized Sleep Routine PDF",
-    price: "$5",
-    description: "Turn tonight's result into a printable routine you can keep beside your bed.",
-    bullets: ["Bedtime and wake-up targets", "Step-by-step routine", "Personal notes from your inputs"],
-    badge: "Instant value",
-  },
-  {
-    id: "paid-planner",
-    title: "Paid Sleep Planner",
-    price: "$19",
-    description: "A lightweight planner for planning, tracking, and adjusting sleep week by week.",
-    bullets: ["Weekly planning pages", "Habit score tracking", "Sleep debt review prompts"],
-    badge: "Premium",
-  },
-  {
-    id: "notion-template",
-    title: "Notion Sleep Tracker Template",
-    price: "$9",
-    description: "Track bedtime, wake-up time, sleep quality, caffeine, screens, and weekly trends in Notion.",
-    bullets: ["Sleep log database", "Weekly score dashboard", "Habit experiments library"],
-    badge: "Template",
-  },
+];
+
+const deliveryItems = [
+  "A complete 7-day better sleep plan with one primary focus per day.",
+  "A personalized routine summary based on the calculator result saved before checkout.",
+  "A weekly sleep habit score worksheet you can reuse every Sunday.",
+  "A Notion tracker field guide for bedtime, wake-up time, quality, caffeine, screens, and trends.",
 ];
 
 function parseGoogleCredential(credential: string): GoogleUser | null {
@@ -461,8 +451,8 @@ export function CheckoutPageClient() {
             Choose your sleep upgrade.
           </h1>
           <p className="mt-4 text-sm leading-7 text-ink/66">
-            Start with the $7 plan or choose a focused planner/template. Your purchase is processed
-            securely with PayPal and saved to your Google account for 30 days.
+            Buy the $7 plan once and get a focused sleep reset bundle you can use tonight. Your
+            purchase is processed securely with PayPal and saved to your Google account for 30 days.
           </p>
 
           <section className="mt-5 rounded border border-mint/25 bg-mint/8 p-4">
@@ -470,42 +460,28 @@ export function CheckoutPageClient() {
               Delivered after payment
             </p>
             <div className="mt-3 grid gap-3 text-sm leading-6 text-ink/68 sm:grid-cols-2">
-              <p>7-day better sleep plan with one practical reset task per day.</p>
-              <p>Printable routine guide that can be saved as a browser PDF.</p>
-              <p>Sleep habit score checklist for weekly self-review.</p>
-              <p>Notion sleep tracker field list and setup guidance.</p>
+              {deliveryItems.map((item) => (
+                <p key={item}>{item}</p>
+              ))}
             </div>
           </section>
 
-          <div className="mt-6 grid gap-3">
-            {offers.map((offer) => {
-              const isSelected = offer.id === selectedOffer;
-
-              return (
-                <button
-                  key={offer.id}
-                  type="button"
-                  onClick={() => setSelectedOffer(offer.id)}
-                  className={`rounded border p-4 text-left transition ${
-                    isSelected ? "border-dusk bg-dusk/6" : "border-ink/10 bg-white hover:border-dusk/50"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <span className="rounded bg-ink px-2 py-1 text-xs font-bold text-white">{offer.badge}</span>
-                      <h2 className="mt-3 text-xl font-bold text-ink">{offer.title}</h2>
-                    </div>
-                    <span className="text-2xl font-bold text-ink">{offer.price}</span>
-                  </div>
-                  <p className="mt-2 text-sm leading-6 text-ink/62">{offer.description}</p>
-                  <ul className="mt-3 grid gap-1 text-sm leading-6 text-ink/68">
-                    {offer.bullets.map((bullet) => (
-                      <li key={bullet}>{bullet}</li>
-                    ))}
-                  </ul>
-                </button>
-              );
-            })}
+          <div className="mt-6 rounded border border-dusk bg-dusk/6 p-5">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <span className="rounded bg-ink px-2 py-1 text-xs font-bold text-white">
+                  {selectedOfferDetails.badge}
+                </span>
+                <h2 className="mt-3 text-2xl font-bold text-ink">{selectedOfferDetails.title}</h2>
+              </div>
+              <span className="text-3xl font-bold text-ink">{selectedOfferDetails.price}</span>
+            </div>
+            <p className="mt-3 text-sm leading-6 text-ink/64">{selectedOfferDetails.description}</p>
+            <ul className="mt-4 grid gap-2 text-sm leading-6 text-ink/68">
+              {selectedOfferDetails.bullets.map((bullet) => (
+                <li key={bullet}>{bullet}</li>
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -546,8 +522,8 @@ export function CheckoutPageClient() {
           <section className="mt-5 rounded border border-ink/10 bg-white p-4 text-sm leading-6 text-ink/64">
             <h3 className="text-lg font-bold text-ink">Purchase terms</h3>
             <p className="mt-2">
-              This is a one-time digital purchase that unlocks 30-day access. It is not a
-              subscription and does not renew automatically.
+              This is a one-time digital purchase that unlocks access to the 7-day plan page for 30
+              days. It is not a subscription and does not renew automatically.
             </p>
             <h3 className="mt-4 text-lg font-bold text-ink">Refund policy</h3>
             <p className="mt-2">

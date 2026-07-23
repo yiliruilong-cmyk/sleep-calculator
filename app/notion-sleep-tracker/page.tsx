@@ -45,10 +45,10 @@ export default function NotionSleepTrackerPage() {
               quality, caffeine, screens, and weekly trends.
             </p>
             <a
-              href="/#sleep-products"
+              href="/7-day-better-sleep-plan"
               className="mt-5 inline-flex rounded bg-ink px-4 py-3 font-bold text-white transition hover:bg-ink/90"
             >
-              Get the Notion template
+              View the 7-day plan
             </a>
           </div>
           <div className="rounded bg-ink p-5 text-white">

@@ -20,10 +20,10 @@ export default function PaymentCancelledPage() {
           </p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <a
-              href="/#sleep-products"
+              href="/checkout?offer=7-day-plan"
               className="rounded bg-ink px-4 py-3 text-center font-bold text-white transition hover:bg-ink/90"
             >
-              Choose a plan
+              Return to checkout
             </a>
             <a
               href="/"

@@ -1,19 +1,7 @@
 const products = {
   "7-day-plan": {
-    title: "7-Day Better Sleep Plan - Monthly Access",
+    title: "7-Day Better Sleep Plan - One-Time Digital Access",
     value: "7.00",
-  },
-  "routine-pdf": {
-    title: "Personalized Sleep Routine PDF",
-    value: "5.00",
-  },
-  "paid-planner": {
-    title: "Paid Sleep Planner",
-    value: "19.00",
-  },
-  "notion-template": {
-    title: "Notion Sleep Tracker Template",
-    value: "9.00",
   },
 };
 

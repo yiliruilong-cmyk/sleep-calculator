@@ -27,7 +27,7 @@ const menuGroups = [
         description: "Build a practical wind-down schedule for tonight.",
       },
       {
-        href: "/#seven-day-plan",
+        href: "/7-day-better-sleep-plan",
         title: "7-Day Sleep Plan",
         description: "Follow a simple one-week reset plan.",
       },
@@ -57,9 +57,9 @@ const menuGroups = [
         description: "Quick answers for common sleep timing questions.",
       },
       {
-        href: "/#free-tools",
-        title: "More Free Tools",
-        description: "Explore focused pages around sleep routines and tracking.",
+        href: "/sleep-routine-planner",
+        title: "Routine Planner",
+        description: "Create a focused wind-down schedule.",
       },
     ],
   },
@@ -128,10 +128,10 @@ export function AppNavigation({ activePath = "/", authSlot }: AppNavigationProps
 
         <div className="flex min-w-0 items-center justify-end gap-2">
           <a
-            href="/checkout"
+            href="/7-day-better-sleep-plan"
             className="hidden rounded bg-coral px-4 py-2 text-sm font-bold text-white transition hover:bg-coral/90 sm:inline-flex"
           >
-            Upgrade
+            7-Day Plan
           </a>
           {authSlot ? <div className="min-w-[180px] max-w-[280px] overflow-hidden">{authSlot}</div> : null}
 
