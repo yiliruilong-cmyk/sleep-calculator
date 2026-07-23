@@ -11,7 +11,7 @@ export function SleepRoutinePlanner() {
   const [style, setStyle] = useState("calm");
 
   const plan = useMemo(() => {
-    const wake = toMinutes(wakeTime);
+    const wake = toMinutes(wakeTime, 7 * 60);
     const bedtime = addMinutes(wake, -(sleepHours * 60 + latency));
     const start = addMinutes(bedtime, -windDown);
     const middle = addMinutes(start, Math.round(windDown / 2));

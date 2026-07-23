@@ -1,9 +1,11 @@
-export function toMinutes(value: string) {
+export function toMinutes(value: string, fallback = 0) {
   const [hours, minutes] = value.split(":").map(Number);
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return fallback;
   return hours * 60 + minutes;
 }
 
 export function wrapMinutes(value: number) {
+  if (!Number.isFinite(value)) return 0;
   const day = 24 * 60;
   return ((value % day) + day) % day;
 }

@@ -68,12 +68,14 @@ const modeCopy: Record<Mode, string> = {
   duration: "I want to sleep for...",
 };
 
-function toMinutes(value: string) {
+function toMinutes(value: string, fallback = 0) {
   const [hours, minutes] = value.split(":").map(Number);
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return fallback;
   return hours * 60 + minutes;
 }
 
 function wrapMinutes(value: number) {
+  if (!Number.isFinite(value)) return 0;
   const day = 24 * 60;
   return ((value % day) + day) % day;
 }
@@ -216,8 +218,8 @@ export default function Home() {
   const googleButtonRef = useRef<HTMLDivElement | null>(null);
 
   const results = useMemo(() => {
-    const wake = toMinutes(wakeTime);
-    const bed = toMinutes(bedTime);
+    const wake = toMinutes(wakeTime, 7 * 60);
+    const bed = toMinutes(bedTime, 22 * 60 + 30);
     const goalMinutes = sleepGoal * 60;
 
     return cycleCounts.map((cycles) => {
