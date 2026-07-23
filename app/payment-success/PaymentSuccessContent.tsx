@@ -170,11 +170,12 @@ export function PaymentSuccessContent() {
       <section className="rounded-lg border border-mint/25 bg-white p-6 shadow-soft md:p-8">
         <p className="text-sm font-bold uppercase tracking-[0.16em] text-mint">Payment successful</p>
         <h1 className="mt-3 text-4xl font-bold leading-tight text-ink">
-          Your 7-Day Better Sleep Plan is ready.
+          Your sleep upgrade is ready.
         </h1>
         <p className="mt-4 max-w-3xl text-sm leading-7 text-ink/66">
           This is your paid delivery page. Print it, save it as a PDF, or keep it open while you
-          follow the plan this week. Access is saved to your Google account for 30 days.
+          use the sleep plan, worksheet, PDF routine, or tracker materials. Access is saved to your
+          Google account for 30 days.
         </p>
         <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {[

@@ -87,6 +87,62 @@ const offers = [
     ],
     badge: "Best starter",
   },
+  {
+    id: "personalized-routine-pdf",
+    title: "Personalized Sleep Routine PDF",
+    price: "$5",
+    description:
+      "A printable routine summary based on your calculator inputs, bedtime target, and wind-down settings.",
+    bullets: [
+      "Bedtime and wake-up target summary",
+      "Wind-down checklist for tonight",
+      "Screen, caffeine, and nap notes",
+      "PDF-friendly layout for printing",
+    ],
+    badge: "Quick win",
+  },
+  {
+    id: "sleep-habit-score",
+    title: "Sleep Habit Score Worksheet",
+    price: "$4",
+    description:
+      "A simple scorecard for reviewing sleep timing, screen use, caffeine, routine consistency, and morning reset.",
+    bullets: [
+      "Weekly scoring worksheet",
+      "Six sleep habit categories",
+      "Improvement prompts by score range",
+      "Reusable Sunday review flow",
+    ],
+    badge: "Low-ticket",
+  },
+  {
+    id: "paid-sleep-planner",
+    title: "Paid Sleep Planner",
+    price: "$19",
+    description:
+      "A fuller sleep planning kit for people who want to plan, track, and adjust their routine over several weeks.",
+    bullets: [
+      "Weekly planning pages",
+      "Routine experiments library",
+      "Sleep debt review prompts",
+      "Habit score tracking system",
+    ],
+    badge: "Full kit",
+  },
+  {
+    id: "notion-sleep-tracker",
+    title: "Notion Sleep Tracker Template",
+    price: "$9",
+    description:
+      "A Notion-ready sleep tracking structure for bedtime, wake-up time, quality, caffeine, screens, and weekly trends.",
+    bullets: [
+      "Sleep log database fields",
+      "Weekly score dashboard guide",
+      "Habit experiment views",
+      "Setup and duplication instructions",
+    ],
+    badge: "Template",
+  },
 ];
 
 const deliveryItems = [
@@ -451,13 +507,13 @@ export function CheckoutPageClient() {
             Choose your sleep upgrade.
           </h1>
           <p className="mt-4 text-sm leading-7 text-ink/66">
-            Buy the $7 plan once and get a focused sleep reset bundle you can use tonight. Your
-            purchase is processed securely with PayPal and saved to your Google account for 30 days.
+            Choose one digital sleep product and pay once. Your purchase is processed securely with
+            PayPal and saved to your Google account for 30 days.
           </p>
 
           <section className="mt-5 rounded border border-mint/25 bg-mint/8 p-4">
             <p className="text-sm font-bold uppercase tracking-[0.14em] text-mint">
-              Delivered after payment
+              Available paid content
             </p>
             <div className="mt-3 grid gap-3 text-sm leading-6 text-ink/68 sm:grid-cols-2">
               {deliveryItems.map((item) => (
@@ -466,22 +522,36 @@ export function CheckoutPageClient() {
             </div>
           </section>
 
-          <div className="mt-6 rounded border border-dusk bg-dusk/6 p-5">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <span className="rounded bg-ink px-2 py-1 text-xs font-bold text-white">
-                  {selectedOfferDetails.badge}
-                </span>
-                <h2 className="mt-3 text-2xl font-bold text-ink">{selectedOfferDetails.title}</h2>
-              </div>
-              <span className="text-3xl font-bold text-ink">{selectedOfferDetails.price}</span>
-            </div>
-            <p className="mt-3 text-sm leading-6 text-ink/64">{selectedOfferDetails.description}</p>
-            <ul className="mt-4 grid gap-2 text-sm leading-6 text-ink/68">
-              {selectedOfferDetails.bullets.map((bullet) => (
-                <li key={bullet}>{bullet}</li>
-              ))}
-            </ul>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {offers.map((offer) => {
+              const isSelected = offer.id === selectedOffer;
+
+              return (
+                <button
+                  key={offer.id}
+                  type="button"
+                  onClick={() => setSelectedOffer(offer.id)}
+                  className={`rounded border p-4 text-left transition ${
+                    isSelected ? "border-dusk bg-dusk/6 shadow-soft" : "border-ink/10 bg-white hover:bg-mist"
+                  }`}
+                  aria-pressed={isSelected}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="rounded bg-ink px-2 py-1 text-xs font-bold text-white">
+                      {offer.badge}
+                    </span>
+                    <span className="text-2xl font-bold text-ink">{offer.price}</span>
+                  </div>
+                  <h2 className="mt-3 text-xl font-bold text-ink">{offer.title}</h2>
+                  <p className="mt-2 text-sm leading-6 text-ink/64">{offer.description}</p>
+                  <ul className="mt-3 grid gap-1 text-sm leading-6 text-ink/68">
+                    {offer.bullets.slice(0, 3).map((bullet) => (
+                      <li key={bullet}>{bullet}</li>
+                    ))}
+                  </ul>
+                </button>
+              );
+            })}
           </div>
         </section>
 
@@ -522,8 +592,8 @@ export function CheckoutPageClient() {
           <section className="mt-5 rounded border border-ink/10 bg-white p-4 text-sm leading-6 text-ink/64">
             <h3 className="text-lg font-bold text-ink">Purchase terms</h3>
             <p className="mt-2">
-              This is a one-time digital purchase that unlocks access to the 7-day plan page for 30
-              days. It is not a subscription and does not renew automatically.
+              This is a one-time digital purchase that unlocks access to the selected sleep product
+              for 30 days. It is not a subscription and does not renew automatically.
             </p>
             <h3 className="mt-4 text-lg font-bold text-ink">Refund policy</h3>
             <p className="mt-2">

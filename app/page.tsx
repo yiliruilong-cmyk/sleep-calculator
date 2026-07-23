@@ -139,66 +139,6 @@ function getOptionNote(cycles: number, sleepMinutes: number) {
   return "A lighter option that may work for occasional short nights.";
 }
 
-function buildRoutine(
-  recommendedBedtime: number,
-  latency: number,
-  routineLength: number,
-  screenUse: boolean,
-  caffeine: string,
-  nap: string,
-) {
-  const getInBed = recommendedBedtime;
-  const estimatedSleep = addMinutes(getInBed, latency);
-  const start = addMinutes(getInBed, -routineLength);
-  const midpoint = addMinutes(start, Math.max(15, Math.round(routineLength / 2)));
-  const screenCutoff = addMinutes(getInBed, -30);
-
-  const steps = [
-    {
-      time: formatTime(start),
-      title: "Start winding down",
-      detail: "Lower the lights and move into a calmer part of the evening.",
-    },
-    {
-      time: formatTime(midpoint),
-      title: screenUse ? "Switch away from scrolling" : "Keep stimulation low",
-      detail: screenUse
-        ? "Put your phone away or choose something slow and non-interactive."
-        : "Keep the room quiet and avoid work-like tasks.",
-    },
-    {
-      time: formatTime(screenCutoff),
-      title: "Prepare your sleep environment",
-      detail: "Cool the room, reduce noise, and set anything you need for morning.",
-    },
-    {
-      time: formatTime(getInBed),
-      title: "Get in bed",
-      detail: "Use this as your lights-out target, with a small buffer to settle in.",
-    },
-    {
-      time: formatTime(estimatedSleep),
-      title: "Estimated sleep time",
-      detail: "This includes your usual time to fall asleep.",
-    },
-  ];
-
-  const notes = [];
-  if (caffeine === "late") {
-    notes.push("Late caffeine may make it harder to fall asleep tonight.");
-  } else if (caffeine === "afternoon") {
-    notes.push("Afternoon caffeine can still affect some people at bedtime.");
-  }
-  if (nap === "late") {
-    notes.push("A late nap may push your natural sleepiness later.");
-  }
-  if (latency >= 30) {
-    notes.push("Because you usually need extra time to fall asleep, start the routine earlier.");
-  }
-
-  return { steps, notes };
-}
-
 function getSleepHabitScore(
   sleepGoal: number,
   latency: number,
@@ -318,11 +258,6 @@ export default function Home() {
     })[0];
   }, [results, sleepGoal]);
 
-  const routine = useMemo(
-    () => buildRoutine(best.bedtime, latency, routineLength, screenUse, caffeine, nap),
-    [best.bedtime, caffeine, latency, nap, routineLength, screenUse],
-  );
-
   const sleepScore = useMemo(
     () => getSleepHabitScore(sleepGoal, latency, routineLength, screenUse, caffeine, nap),
     [caffeine, latency, nap, routineLength, screenUse, sleepGoal],
@@ -392,10 +327,6 @@ export default function Home() {
     document.head.appendChild(script);
   }, [googleUser]);
 
-  function handlePrintRoutine() {
-    window.print();
-  }
-
   function savePlanSnapshot() {
     window.localStorage.setItem(
       planSnapshotStorageKey,
@@ -408,7 +339,6 @@ export default function Home() {
         score: sleepScore.score,
         scoreLabel: sleepScore.label,
         improvements: sleepScore.improvements,
-        notes: routine.notes,
         savedAt: Date.now(),
       }),
     );
@@ -417,11 +347,6 @@ export default function Home() {
   function openSevenDayPlan() {
     savePlanSnapshot();
     window.location.assign("/7-day-better-sleep-plan");
-  }
-
-  function openCheckout() {
-    savePlanSnapshot();
-    window.location.assign("/checkout?offer=7-day-plan");
   }
 
   function handleGoogleSignOut() {
@@ -736,69 +661,6 @@ export default function Home() {
         </aside>
       </section>
 
-      <section id="routine" className="mx-auto grid max-w-7xl gap-6 px-4 pb-6 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8">
-        <section className="rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
-          <h2 className="text-2xl font-bold text-ink">Tonight&apos;s wind-down routine</h2>
-          <div className="mt-5 flex flex-col gap-3">
-            {routine.steps.map((step) => (
-              <div key={`${step.time}-${step.title}`} className="grid grid-cols-[88px_1fr] gap-3">
-                <time className="pt-1 text-sm font-bold text-coral">{step.time}</time>
-                <div className="rounded border border-ink/10 bg-mist p-3">
-                  <p className="font-bold text-ink">{step.title}</p>
-                  <p className="mt-1 text-sm leading-6 text-ink/62">{step.detail}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
-          <h2 className="text-2xl font-bold text-ink">What to know tonight</h2>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            <div className="rounded border border-mint/25 bg-mint/8 p-4">
-              <p className="text-sm font-bold uppercase tracking-[0.14em] text-mint">Cycle basis</p>
-              <p className="mt-2 text-sm leading-6 text-ink/70">
-                The calculator uses 90-minute sleep cycles and your usual time to fall asleep.
-              </p>
-            </div>
-            <div className="rounded border border-coral/25 bg-coral/8 p-4">
-              <p className="text-sm font-bold uppercase tracking-[0.14em] text-coral">Health boundary</p>
-              <p className="mt-2 text-sm leading-6 text-ink/70">
-                It offers general planning guidance and does not diagnose sleep disorders.
-              </p>
-            </div>
-          </div>
-          <div className="mt-4 rounded border border-ink/10 bg-mist p-4">
-            <p className="font-bold text-ink">Personal notes</p>
-            {routine.notes.length ? (
-              <ul className="mt-2 space-y-2 text-sm leading-6 text-ink/68">
-                {routine.notes.map((note) => (
-                  <li key={note}>{note}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className="mt-2 text-sm leading-6 text-ink/68">
-                Your current settings do not add any extra caution notes for tonight.
-              </p>
-            )}
-          </div>
-          <div className="mt-4 rounded border border-pollen/30 bg-pollen/12 p-4">
-            <p className="font-bold text-ink">Simple sleep tip</p>
-            <p className="mt-2 text-sm leading-6 text-ink/68">
-              A consistent wake-up time often makes bedtime easier to predict than chasing a perfect
-              lights-out time every night.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={handlePrintRoutine}
-            className="mt-4 w-full rounded bg-ink px-4 py-3 font-bold text-white transition hover:bg-ink/90"
-          >
-            Print or save as PDF
-          </button>
-        </section>
-      </section>
-
       <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
         <section id="seven-day-plan" className="mb-6 rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
           <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
@@ -814,20 +676,13 @@ export default function Home() {
                 that timing into daily actions for consistency, screen timing, caffeine, naps, and morning reset.
               </p>
             </div>
-            <div className="grid gap-2 sm:grid-cols-2 lg:w-[360px] lg:grid-cols-1">
+            <div className="lg:w-[240px]">
               <button
                 type="button"
                 onClick={openSevenDayPlan}
                 className="rounded bg-ink px-4 py-3 text-center font-bold text-white transition hover:bg-ink/90"
               >
                 Preview the 7-day plan
-              </button>
-              <button
-                type="button"
-                onClick={openCheckout}
-                className="rounded border border-ink/14 px-4 py-3 text-center font-bold text-ink transition hover:bg-mist"
-              >
-                Get full plan for $7
               </button>
             </div>
           </div>
@@ -914,37 +769,6 @@ export default function Home() {
             </div>
           </section>
         </div>
-
-        <section className="mt-6 rounded-lg border border-dusk/15 bg-ink p-5 text-white shadow-soft md:p-6">
-          <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
-            <div>
-              <p className="text-sm font-bold uppercase tracking-[0.16em] text-mint">
-                7-day plan
-              </p>
-              <h2 className="mt-2 text-2xl font-bold">Ready to turn this into a week-long routine?</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-white/68">
-                Keep the calculator free, then use the 7-day plan when you want a structured reset
-                for bedtime consistency, screens, caffeine, naps, and morning momentum.
-              </p>
-            </div>
-            <div className="grid gap-2 sm:grid-cols-2">
-              <button
-                type="button"
-                onClick={openSevenDayPlan}
-                className="rounded bg-mint px-4 py-3 text-center font-bold text-ink transition hover:bg-mint/90"
-              >
-                Preview the plan
-              </button>
-              <button
-                type="button"
-                onClick={openCheckout}
-                className="rounded border border-white/18 px-4 py-3 text-center font-bold text-white transition hover:bg-white/10"
-              >
-                Get full plan for $7
-              </button>
-            </div>
-          </div>
-        </section>
 
         <footer className="mt-6 rounded-lg border border-ink/10 bg-white/82 p-4 text-sm leading-6 text-ink/62">
           This tool provides general sleep planning and education only. It does not diagnose or treat

@@ -3,6 +3,22 @@ const products = {
     title: "7-Day Better Sleep Plan - One-Time Digital Access",
     value: "7.00",
   },
+  "personalized-routine-pdf": {
+    title: "Personalized Sleep Routine PDF - One-Time Digital Access",
+    value: "5.00",
+  },
+  "sleep-habit-score": {
+    title: "Sleep Habit Score Worksheet - One-Time Digital Access",
+    value: "4.00",
+  },
+  "paid-sleep-planner": {
+    title: "Paid Sleep Planner - One-Time Digital Access",
+    value: "19.00",
+  },
+  "notion-sleep-tracker": {
+    title: "Notion Sleep Tracker Template - One-Time Digital Access",
+    value: "9.00",
+  },
 };
 
 function getPayPalBaseUrl(env) {
