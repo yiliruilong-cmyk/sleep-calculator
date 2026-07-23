@@ -101,6 +101,7 @@ the server side. Configure these Cloudflare Pages environment variables:
 PAYPAL_CLIENT_ID=your-paypal-client-id
 PAYPAL_CLIENT_SECRET=your-paypal-client-secret
 PAYPAL_ENVIRONMENT=sandbox # use live for production payments
+PAYPAL_WEBHOOK_ID=your-paypal-webhook-id
 ```
 
 Use PayPal sandbox credentials while testing. Before accepting real payments,
@@ -121,4 +122,11 @@ Runtime API routes:
 /api/paypal/config
 /api/paypal/create-order
 /api/paypal/capture-order
+/api/paypal/webhook
+```
+
+PayPal webhook URL:
+
+```text
+https://sleepcalculator.life/api/paypal/webhook
 ```
