@@ -41,6 +41,7 @@ declare global {
           renderButton: (
             element: HTMLElement,
             options: {
+              locale?: string;
               shape?: string;
               size?: string;
               text?: string;
@@ -280,6 +281,7 @@ export function CheckoutPageClient() {
         },
       });
       window.google.accounts.id.renderButton(googleButtonRef.current, {
+        locale: "en",
         shape: "rectangular",
         size: "large",
         text: "signin_with",
@@ -491,10 +493,13 @@ export function CheckoutPageClient() {
         Sign out
       </button>
     </div>
-  ) : googleClientId ? (
-    <div ref={googleButtonRef} className="min-h-10 min-w-[180px]" aria-label="Sign in with Google" />
   ) : (
-    <p className="text-xs font-semibold text-ink/62">Add Google Client ID to enable sign in</p>
+    <a
+      href="/login?next=/checkout"
+      className="inline-flex whitespace-nowrap rounded border border-ink/10 bg-white px-4 py-2 text-sm font-bold text-ink shadow-sm transition hover:bg-mist"
+    >
+      Sign in
+    </a>
   );
 
   return (

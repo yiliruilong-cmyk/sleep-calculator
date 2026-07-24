@@ -2,14 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const audioPreferenceKey = "sleep-calculator-ambient-audio";
 const musicLoopStartSeconds = 5;
-const musicLoopEndPaddingSeconds = 0.9;
-const musicVolume = 0.28;
+const musicLoopEndPaddingSeconds = 1.2;
+const musicVolume = 0.22;
 
 export function AmbientAudio() {
   const [isEnabled, setIsEnabled] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [isLoginPage, setIsLoginPage] = useState(false);
   const ambientContextRef = useRef<AudioContext | null>(null);
   const isEnabledRef = useRef(false);
   const musicBufferRef = useRef<AudioBuffer | null>(null);
@@ -17,8 +17,11 @@ export function AmbientAudio() {
   const musicSourceRef = useRef<AudioBufferSourceNode | null>(null);
 
   useEffect(() => {
+    const onLoginPage = window.location.pathname === "/login";
+
     setIsReady(true);
-    setIsEnabled(window.localStorage.getItem(audioPreferenceKey) === "on");
+    setIsLoginPage(onLoginPage);
+    setIsEnabled(onLoginPage);
 
     return () => {
       stopMusic();
@@ -27,18 +30,23 @@ export function AmbientAudio() {
   }, []);
 
   useEffect(() => {
-    if (!isReady) return;
+    if (!isReady || !isLoginPage) return;
 
     isEnabledRef.current = isEnabled;
 
     if (isEnabled) {
-      window.localStorage.setItem(audioPreferenceKey, "on");
       void startMusic();
+      window.addEventListener("pointerdown", unlockAudio, { once: true });
+      window.addEventListener("keydown", unlockAudio, { once: true });
     } else {
-      window.localStorage.setItem(audioPreferenceKey, "off");
       stopMusic();
     }
-  }, [isEnabled, isReady]);
+
+    return () => {
+      window.removeEventListener("pointerdown", unlockAudio);
+      window.removeEventListener("keydown", unlockAudio);
+    };
+  }, [isEnabled, isLoginPage, isReady]);
 
   function getAmbientContext() {
     const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
@@ -61,6 +69,11 @@ export function AmbientAudio() {
     return buffer;
   }
 
+  function unlockAudio() {
+    if (!isEnabledRef.current) return;
+    void startMusic();
+  }
+
   async function startMusic() {
     if (musicSourceRef.current) return;
 
@@ -79,7 +92,7 @@ export function AmbientAudio() {
       }
       gain.gain.cancelScheduledValues(context.currentTime);
       gain.gain.setValueAtTime(0.001, context.currentTime);
-      gain.gain.linearRampToValueAtTime(musicVolume, context.currentTime + 1.2);
+      gain.gain.linearRampToValueAtTime(musicVolume, context.currentTime + 1.4);
 
       const loopStart = Math.min(musicLoopStartSeconds, Math.max(buffer.duration - 1, 0));
       const loopEnd = Math.max(loopStart + 1, buffer.duration - musicLoopEndPaddingSeconds);
@@ -96,7 +109,7 @@ export function AmbientAudio() {
       };
       musicSourceRef.current = source;
     } catch {
-      setIsEnabled(false);
+      // Browsers may block autoplay until the first user gesture.
     }
   }
 
@@ -114,15 +127,15 @@ export function AmbientAudio() {
     source.disconnect();
   }
 
-  if (!isReady) return null;
+  if (!isReady || !isLoginPage) return null;
 
   return (
     <button
       type="button"
       onClick={() => setIsEnabled((current) => !current)}
-      className="fixed bottom-4 right-4 z-[70] inline-flex min-h-11 items-center gap-2 rounded-full border border-white/22 bg-ink/84 px-4 py-3 text-sm font-bold text-white shadow-lift backdrop-blur-md transition hover:bg-ink print:hidden"
+      className="fixed bottom-4 right-4 z-[70] inline-flex min-h-11 items-center gap-2 rounded-full border border-white/22 bg-ink/72 px-4 py-3 text-sm font-bold text-white shadow-lift backdrop-blur-md transition hover:bg-ink/88 print:hidden"
       aria-pressed={isEnabled}
-      aria-label={isEnabled ? "Turn ambient sound off" : "Turn ambient sound on"}
+      aria-label={isEnabled ? "Turn sound off" : "Turn sound on"}
     >
       <span aria-hidden="true">♪</span>
       {isEnabled ? "Sound on" : "Sound off"}

@@ -25,6 +25,7 @@ declare global {
           renderButton: (
             element: HTMLElement,
             options: {
+              locale?: string;
               shape?: string;
               size?: string;
               text?: string;
@@ -131,6 +132,7 @@ export function LoginPageClient() {
         },
       });
       window.google.accounts.id.renderButton(googleButtonRef.current, {
+        locale: "en",
         shape: "rectangular",
         size: "large",
         text: "signin_with",
@@ -187,13 +189,13 @@ export function LoginPageClient() {
         />
       ))}
 
-      <section className="relative z-10 grid min-h-screen place-items-center px-5 py-24">
+      <section className="relative z-10 grid min-h-screen place-items-center px-5 pb-28 pt-12 md:pb-36 md:pt-8">
         <div className="w-full max-w-[540px] text-center">
-          <p className="text-sm font-bold uppercase tracking-[0.16em] text-pollen">Member login</p>
-          <h1 className="mt-3 text-3xl font-bold leading-tight text-white md:text-4xl">
+          <p className="text-sm font-bold uppercase tracking-[0.16em] text-pollen/76">Member login</p>
+          <h1 className="mt-3 text-3xl font-bold leading-tight text-white/88 md:text-4xl">
             Continue your sleep plan
           </h1>
-          <p className="mx-auto mt-3 max-w-[440px] text-sm leading-6 text-white/72">
+          <p className="mx-auto mt-3 max-w-[440px] text-sm leading-6 text-white/54">
             Sign in with Google to access your purchased plans, PDFs, and templates.
           </p>
 
@@ -230,7 +232,7 @@ export function LoginPageClient() {
                   window.history.replaceState(null, "", signInHref);
                   setIsSignInOpen(true);
                 }}
-                className="inline-flex w-full items-center justify-center rounded-full border border-pollen/48 bg-ink/44 px-10 py-4 text-lg font-bold text-white shadow-[0_0_26px_rgba(255,210,91,0.18)] backdrop-blur-md transition hover:border-pollen hover:bg-ink/62 focus:outline-none focus:ring-2 focus:ring-pollen/70"
+                className="inline-flex w-full items-center justify-center rounded-full border border-pollen/38 bg-ink/36 px-10 py-4 text-lg font-bold text-white/92 shadow-[0_0_26px_rgba(255,210,91,0.14)] backdrop-blur-md transition hover:border-pollen/70 hover:bg-ink/54 focus:outline-none focus:ring-2 focus:ring-pollen/60"
               >
                 Sign in
               </a>

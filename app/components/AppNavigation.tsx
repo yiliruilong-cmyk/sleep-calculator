@@ -4,11 +4,11 @@ import type { ReactNode } from "react";
 import { defaultLocale, getLocaleInfo, locales, type LocaleCode } from "../lib/i18n";
 
 const navItems = [
-  { href: "/", label: "睡眠工具" },
-  { href: "/sleep-routine-planner", label: "规划师" },
-  { href: "/7-day-better-sleep-plan", label: "7天计划" },
-  { href: "/notion-sleep-tracker", label: "模板" },
-  { href: "/checkout", label: "定价" },
+  { href: "/", label: "Sleep Tools" },
+  { href: "/sleep-routine-planner", label: "Planner" },
+  { href: "/7-day-better-sleep-plan", label: "7-Day Plan" },
+  { href: "/notion-sleep-tracker", label: "Templates" },
+  { href: "/checkout", label: "Pricing" },
 ];
 
 type AppNavigationProps = {
@@ -25,13 +25,13 @@ export function AppNavigation({ activePath = "/", authSlot, locale = defaultLoca
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <a href="/" className="flex min-w-0 items-center gap-3" aria-label="Sleep Calculator home">
           <span className="grid h-10 w-10 place-items-center rounded bg-ink text-xl font-bold text-white">
-            睡
+            S
           </span>
           <span className="leading-tight">
             <span className="block text-sm font-bold tracking-[0.12em] text-mint">
-              改善睡眠工具
+              Better Sleep Tools
             </span>
-            <span className="block text-lg font-bold text-ink">睡眠计算器</span>
+            <span className="block text-lg font-bold text-ink">Sleep Calculator</span>
           </span>
         </a>
 
@@ -59,7 +59,7 @@ export function AppNavigation({ activePath = "/", authSlot, locale = defaultLoca
 
           <details className="group relative hidden sm:block">
             <summary className="list-none rounded border border-ink/10 px-3 py-2 text-sm font-bold text-ink transition hover:bg-mist">
-              {activeLocale.nativeLabel}
+              {activeLocale.label}
             </summary>
             <div className="absolute right-0 top-full mt-2 w-44 rounded-lg border border-ink/10 bg-white p-2 shadow-soft">
               {locales.map((item) => (
@@ -71,7 +71,7 @@ export function AppNavigation({ activePath = "/", authSlot, locale = defaultLoca
                     item.code === activeLocale.code ? "text-dusk" : "text-ink/70"
                   }`}
                 >
-                  {item.nativeLabel}
+                  {item.label}
                 </a>
               ))}
             </div>
@@ -89,7 +89,7 @@ export function AppNavigation({ activePath = "/", authSlot, locale = defaultLoca
                   </a>
                 ))}
                 <a href="/checkout" className="rounded bg-ink px-4 py-3 text-center text-sm font-bold text-white">
-                  定价与升级
+                  Pricing and Upgrades
                 </a>
                 <div className="grid gap-2 border-t border-ink/10 pt-2">
                   {locales.map((item) => (
@@ -99,7 +99,7 @@ export function AppNavigation({ activePath = "/", authSlot, locale = defaultLoca
                       hrefLang={item.htmlLang}
                       className="rounded bg-white px-3 py-2 text-sm font-bold text-ink/70"
                     >
-                      {item.nativeLabel}
+                      {item.label}
                     </a>
                   ))}
                 </div>
