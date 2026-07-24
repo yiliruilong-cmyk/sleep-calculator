@@ -363,20 +363,20 @@ export default function Home() {
   const authSlot = googleUser ? (
     <div className="flex items-center gap-2">
       {googleUser.picture ? (
-        <img src={googleUser.picture} alt="" className="h-8 w-8 rounded-full border border-ink/10" />
+        <img src={googleUser.picture} alt="" className="h-8 w-8 rounded-full border border-white/20" />
       ) : (
-        <span className="grid h-8 w-8 place-items-center rounded-full bg-mist text-sm font-bold text-ink">
+        <span className="grid h-8 w-8 place-items-center rounded-full bg-white/[0.12] text-sm font-bold text-white">
           {googleUser.name.charAt(0)}
         </span>
       )}
       <div className="min-w-0">
-        <p className="truncate text-sm font-bold text-ink">{googleUser.name}</p>
-        <p className="truncate text-xs text-ink/52">{googleUser.email}</p>
+        <p className="truncate text-sm font-bold text-white">{googleUser.name}</p>
+        <p className="truncate text-xs text-white/[0.54]">{googleUser.email}</p>
       </div>
       <button
         type="button"
         onClick={handleGoogleSignOut}
-        className="rounded border border-ink/10 px-2 py-1 text-xs font-bold text-ink transition hover:bg-mist"
+        className="rounded border border-white/[0.14] px-2 py-1 text-xs font-bold text-white transition hover:bg-white/10"
       >
         Sign out
       </button>
@@ -384,22 +384,22 @@ export default function Home() {
   ) : (
     <a
       href="/login"
-      className="inline-flex whitespace-nowrap rounded border border-ink/10 bg-white px-4 py-2 text-sm font-bold text-ink shadow-sm transition hover:bg-mist"
+      className="inline-flex whitespace-nowrap rounded border border-white/[0.18] bg-white/10 px-4 py-2 text-sm font-bold text-white shadow-sm backdrop-blur transition hover:bg-white/[0.16]"
     >
       Sign in
     </a>
   );
 
   return (
-    <main className="min-h-screen">
+    <main className="night-shell">
       <AppNavigation activePath="/" authSlot={authSlot} />
-      <section className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-5 sm:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:px-8 lg:py-8">
+      <section className="night-content mx-auto grid w-full max-w-7xl gap-6 px-4 py-5 sm:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:px-8 lg:py-8">
         <div className="flex flex-col gap-5">
-          <section className="rounded-lg border border-white/70 bg-white/82 p-5 shadow-soft backdrop-blur md:p-7">
-            <div className="mb-5 flex flex-wrap items-center gap-2 text-sm font-semibold text-ink/65">
-              <span className="rounded bg-mint/12 px-3 py-1 text-mint">Sleep cycles</span>
-              <span className="rounded bg-coral/12 px-3 py-1 text-coral">Wind-down plan</span>
-              <span className="rounded bg-pollen/18 px-3 py-1 text-ink">No signup</span>
+          <section className="healing-card p-5 md:p-7">
+            <div className="mb-5 flex flex-wrap items-center gap-2 text-sm font-semibold text-ink/[0.65]">
+              <span className="rounded bg-mint/[0.12] px-3 py-1 text-mint">Sleep cycles</span>
+              <span className="rounded bg-coral/[0.12] px-3 py-1 text-coral">Wind-down plan</span>
+              <span className="rounded bg-pollen/[0.18] px-3 py-1 text-ink">No signup</span>
             </div>
             <h1 className="max-w-3xl text-4xl font-bold leading-tight text-ink md:text-6xl">
               Find your best bedtime for tonight.
@@ -410,20 +410,20 @@ export default function Home() {
             </p>
           </section>
 
-          <section id="calculator" className="rounded-lg border border-ink/10 bg-white p-4 shadow-soft md:p-6">
+          <section id="calculator" className="healing-card p-4 md:p-6">
             <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-2xl font-bold text-ink">Sleep Calculator</h2>
                 <p className="mt-1 text-sm text-ink/60">Choose a mode and adjust the details.</p>
               </div>
-              <div className="grid grid-cols-1 gap-2 rounded bg-mist p-1 sm:grid-cols-3" role="tablist">
+              <div className="grid grid-cols-1 gap-2 rounded bg-white/[0.58] p-1 sm:grid-cols-3" role="tablist">
                 {(Object.keys(modeCopy) as Mode[]).map((item) => (
                   <button
                     key={item}
                     type="button"
                     onClick={() => setMode(item)}
                     className={`rounded px-3 py-2 text-sm font-semibold transition ${
-                      mode === item ? "bg-ink text-white" : "text-ink/70 hover:bg-white"
+                      mode === item ? "bg-ink text-white" : "text-ink/70 hover:bg-white/70"
                     }`}
                     aria-pressed={mode === item}
                   >
@@ -440,7 +440,7 @@ export default function Home() {
                   type="time"
                   value={wakeTime}
                   onChange={(event) => setWakeTime(event.target.value)}
-                  className="mt-2 w-full rounded border border-ink/12 bg-white px-3 py-3 text-lg font-semibold text-ink outline-none focus:border-dusk"
+                  className="mt-2 w-full rounded border border-ink/[0.12] bg-white px-3 py-3 text-lg font-semibold text-ink outline-none focus:border-dusk"
                 />
               </label>
 
@@ -450,7 +450,7 @@ export default function Home() {
                   type="time"
                   value={bedTime}
                   onChange={(event) => setBedTime(event.target.value)}
-                  className="mt-2 w-full rounded border border-ink/12 bg-white px-3 py-3 text-lg font-semibold text-ink outline-none focus:border-dusk"
+                  className="mt-2 w-full rounded border border-ink/[0.12] bg-white px-3 py-3 text-lg font-semibold text-ink outline-none focus:border-dusk"
                 />
               </label>
 
@@ -459,7 +459,7 @@ export default function Home() {
                 <select
                   value={sleepGoal}
                   onChange={(event) => setSleepGoal(Number(event.target.value))}
-                  className="mt-2 w-full rounded border border-ink/12 bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
+                  className="mt-2 w-full rounded border border-ink/[0.12] bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
                 >
                   <option value={6}>6 hours</option>
                   <option value={7}>7 hours</option>
@@ -474,7 +474,7 @@ export default function Home() {
                 <select
                   value={latency}
                   onChange={(event) => setLatency(Number(event.target.value))}
-                  className="mt-2 w-full rounded border border-ink/12 bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
+                  className="mt-2 w-full rounded border border-ink/[0.12] bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
                 >
                   <option value={5}>5 minutes</option>
                   <option value={10}>10 minutes</option>
@@ -490,7 +490,7 @@ export default function Home() {
                 <select
                   value={ageGroup}
                   onChange={(event) => setAgeGroup(event.target.value)}
-                  className="mt-2 w-full rounded border border-ink/12 bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
+                  className="mt-2 w-full rounded border border-ink/[0.12] bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
                 >
                   <option value="adult">Adult</option>
                   <option value="teen">Teen</option>
@@ -503,7 +503,7 @@ export default function Home() {
                 <select
                   value={routineLength}
                   onChange={(event) => setRoutineLength(Number(event.target.value))}
-                  className="mt-2 w-full rounded border border-ink/12 bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
+                  className="mt-2 w-full rounded border border-ink/[0.12] bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
                 >
                   <option value={30}>30 minutes</option>
                   <option value={45}>45 minutes</option>
@@ -517,7 +517,7 @@ export default function Home() {
                 <select
                   value={caffeine}
                   onChange={(event) => setCaffeine(event.target.value)}
-                  className="mt-2 w-full rounded border border-ink/12 bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
+                  className="mt-2 w-full rounded border border-ink/[0.12] bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
                 >
                   <option value="none">None or morning only</option>
                   <option value="afternoon">Afternoon</option>
@@ -530,7 +530,7 @@ export default function Home() {
                 <select
                   value={nap}
                   onChange={(event) => setNap(event.target.value)}
-                  className="mt-2 w-full rounded border border-ink/12 bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
+                  className="mt-2 w-full rounded border border-ink/[0.12] bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
                 >
                   <option value="none">No nap</option>
                   <option value="early">Early short nap</option>
@@ -539,7 +539,7 @@ export default function Home() {
               </label>
             </div>
 
-            <label className="mt-4 flex items-start gap-3 rounded border border-ink/10 bg-mist px-3 py-3">
+            <label className="mt-4 flex items-start gap-3 rounded border border-white/[0.36] bg-white/[0.54] px-3 py-3 backdrop-blur">
               <input
                 type="checkbox"
                 checked={screenUse}
@@ -555,33 +555,33 @@ export default function Home() {
         </div>
 
         <aside className="flex flex-col gap-5 lg:sticky lg:top-6 lg:self-start">
-          <section className="rounded-lg border border-ink/10 bg-ink p-5 text-white shadow-soft md:p-6">
+          <section className="healing-card-dark p-5 md:p-6">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-mint">Best match</p>
             <div className="mt-5 grid grid-cols-2 gap-3">
               <div>
-                <p className="text-sm text-white/58">Bedtime</p>
+                <p className="text-sm text-white/[0.58]">Bedtime</p>
                 <p className="mt-1 text-3xl font-bold">{formatTime(best.bedtime)}</p>
               </div>
               <div>
-                <p className="text-sm text-white/58">Wake-up</p>
+                <p className="text-sm text-white/[0.58]">Wake-up</p>
                 <p className="mt-1 text-3xl font-bold">{formatTime(best.wakeTime)}</p>
               </div>
             </div>
             <div className="mt-5 grid grid-cols-3 gap-2 text-center">
-              <div className="rounded bg-white/8 px-2 py-3">
+              <div className="rounded bg-white/[0.08] px-2 py-3">
                 <p className="text-xl font-bold">{best.cycles}</p>
-                <p className="text-xs text-white/58">cycles</p>
+                <p className="text-xs text-white/[0.58]">cycles</p>
               </div>
-              <div className="rounded bg-white/8 px-2 py-3">
+              <div className="rounded bg-white/[0.08] px-2 py-3">
                 <p className="text-xl font-bold">{formatDuration(best.sleepMinutes)}</p>
-                <p className="text-xs text-white/58">sleep</p>
+                <p className="text-xs text-white/[0.58]">sleep</p>
               </div>
-              <div className="rounded bg-white/8 px-2 py-3">
+              <div className="rounded bg-white/[0.08] px-2 py-3">
                 <p className="text-xl font-bold">{formatDuration(best.timeInBed)}</p>
-                <p className="text-xs text-white/58">in bed</p>
+                <p className="text-xs text-white/[0.58]">in bed</p>
               </div>
             </div>
-            <p className="mt-4 rounded bg-mint/16 p-3 text-sm leading-6 text-white/82">
+            <p className="mt-4 rounded bg-mint/[0.16] p-3 text-sm leading-6 text-white/[0.82]">
               {ageGroup === "adult"
                 ? "Most adults are commonly guided toward at least 7 hours of sleep. This tool is for planning, not diagnosis."
                 : "Sleep needs vary by age and person. Use this as a planning guide, not a medical rule."}
@@ -595,7 +595,7 @@ export default function Home() {
             </button>
           </section>
 
-          <section className="rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
+          <section className="healing-card p-5 md:p-6">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-bold uppercase tracking-[0.14em] text-dusk">Sleep habit score</p>
@@ -605,16 +605,16 @@ export default function Home() {
                 {sleepScore.score}
               </div>
             </div>
-            <p className="mt-3 text-sm leading-6 text-ink/66">{sleepScore.insight}</p>
+            <p className="mt-3 text-sm leading-6 text-ink/[0.66]">{sleepScore.insight}</p>
             <div className="mt-4 flex flex-col gap-2">
               {sleepScore.improvements.length ? (
                 sleepScore.improvements.map((item) => (
-                  <p key={item} className="rounded border border-ink/10 bg-mist px-3 py-2 text-sm text-ink/68">
+                  <p key={item} className="rounded border border-white/[0.36] bg-white/[0.54] px-3 py-2 text-sm text-ink/[0.68]">
                     {item}
                   </p>
                 ))
               ) : (
-                <p className="rounded border border-ink/10 bg-mist px-3 py-2 text-sm text-ink/68">
+                <p className="rounded border border-white/[0.36] bg-white/[0.54] px-3 py-2 text-sm text-ink/[0.68]">
                   Keep your wake-up time consistent for the next 7 days.
                 </p>
               )}
@@ -622,20 +622,20 @@ export default function Home() {
             <button
               type="button"
               onClick={openSevenDayPlan}
-              className="mt-4 w-full rounded border border-ink/14 px-4 py-3 font-bold text-ink transition hover:bg-mist"
+              className="mt-4 w-full rounded border border-ink/[0.14] px-4 py-3 font-bold text-ink transition hover:bg-mist"
             >
               Improve my score
             </button>
           </section>
 
-          <section className="rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
+          <section className="healing-card p-5 md:p-6">
             <h2 className="text-xl font-bold text-ink">Sleep cycle options</h2>
             <div className="mt-4 flex flex-col gap-3">
               {results.map((option, index) => (
                 <article
                   key={`${option.cycles}-${index}`}
                   className={`rounded border p-4 ${
-                    option.label === "Best match" ? "border-dusk bg-dusk/6" : "border-ink/10 bg-white"
+                    option.label === "Best match" ? "border-dusk bg-dusk/[0.06]" : "border-white/[0.36] bg-white/[0.58]"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-3">
@@ -660,7 +660,7 @@ export default function Home() {
                       <p className="mt-1 text-xl font-bold text-ink">{formatTime(option.wakeTime)}</p>
                     </div>
                   </div>
-                  <p className="mt-3 text-sm leading-6 text-ink/62">{option.note}</p>
+                  <p className="mt-3 text-sm leading-6 text-ink/[0.62]">{option.note}</p>
                 </article>
               ))}
             </div>
@@ -668,15 +668,15 @@ export default function Home() {
         </aside>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-        <section id="seven-day-plan" className="mb-6 rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
+      <section className="night-content mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+        <section id="seven-day-plan" className="healing-card mb-6 p-5 md:p-6">
           <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-coral">
                 7-day plan
               </p>
               <h2 className="mt-2 text-2xl font-bold text-ink">Turn tonight&apos;s result into a simple week.</h2>
-              <p className="mt-3 max-w-3xl text-sm leading-7 text-ink/66">
+              <p className="mt-3 max-w-3xl text-sm leading-7 text-ink/[0.66]">
                 Your current result suggests getting in bed around{" "}
                 <strong className="text-ink">{formatTime(best.bedtime)}</strong> and waking around{" "}
                 <strong className="text-ink">{formatTime(best.wakeTime)}</strong>. The 7-day plan turns
@@ -695,14 +695,14 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mb-6 rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
+        <section className="healing-card mb-6 p-5 md:p-6">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-2xl">
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-coral">
                 Recommended sleep setup
               </p>
               <h2 className="mt-2 text-2xl font-bold text-ink">Make the bedtime easier to follow</h2>
-              <p className="mt-3 text-sm leading-7 text-ink/66">
+              <p className="mt-3 text-sm leading-7 text-ink/[0.66]">
                 The calculator gives the time. Your room and evening cues make the plan easier to
                 keep. Use this area later for clearly labeled affiliate recommendations.
               </p>
@@ -713,9 +713,9 @@ export default function Home() {
                 ["Sound", "Reduce noise or use steady background audio"],
                 ["Temperature", "Keep the room comfortably cool"],
               ].map(([title, detail]) => (
-                <div key={title} className="rounded border border-ink/10 bg-mist p-4">
+                <div key={title} className="rounded border border-white/[0.36] bg-white/[0.54] p-4">
                   <p className="font-bold text-ink">{title}</p>
-                  <p className="mt-2 text-sm leading-6 text-ink/62">{detail}</p>
+                  <p className="mt-2 text-sm leading-6 text-ink/[0.62]">{detail}</p>
                 </div>
               ))}
             </div>
@@ -723,9 +723,9 @@ export default function Home() {
         </section>
 
         <div className="grid gap-6 lg:grid-cols-[0.88fr_1.12fr]">
-          <section className="rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
+          <section className="healing-card p-5 md:p-6">
             <h2 className="text-2xl font-bold text-ink">How this calculator works</h2>
-            <p className="mt-3 text-sm leading-7 text-ink/68">
+            <p className="mt-3 text-sm leading-7 text-ink/[0.68]">
               Start with either a wake-up time or a bedtime. The calculator adds your estimated time
               to fall asleep and maps the night into 90-minute cycles. It then highlights the option
               closest to your sleep goal and builds a practical routine around it.
@@ -736,15 +736,15 @@ export default function Home() {
                 ["Sleep cycles", "The MVP uses 4, 5, and 6 cycle options."],
                 ["Routine timing", "The wind-down plan starts before your recommended bedtime."],
               ].map(([title, detail]) => (
-                <div key={title} className="rounded border border-ink/10 bg-mist p-3">
+                <div key={title} className="rounded border border-white/[0.36] bg-white/[0.54] p-3">
                   <p className="font-bold text-ink">{title}</p>
-                  <p className="mt-1 text-sm leading-6 text-ink/62">{detail}</p>
+                  <p className="mt-1 text-sm leading-6 text-ink/[0.62]">{detail}</p>
                 </div>
               ))}
             </div>
           </section>
 
-          <section id="faq" className="rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
+          <section id="faq" className="healing-card p-5 md:p-6">
             <h2 className="text-2xl font-bold text-ink">FAQ</h2>
             <div className="mt-4 divide-y divide-ink/10">
               {[
@@ -770,14 +770,14 @@ export default function Home() {
                     {question}
                     <span className="float-right text-dusk group-open:rotate-45">+</span>
                   </summary>
-                  <p className="mt-2 text-sm leading-6 text-ink/65">{answer}</p>
+                  <p className="mt-2 text-sm leading-6 text-ink/[0.65]">{answer}</p>
                 </details>
               ))}
             </div>
           </section>
         </div>
 
-        <footer className="mt-6 rounded-lg border border-ink/10 bg-white/82 p-4 text-sm leading-6 text-ink/62">
+        <footer className="healing-card-soft mt-6 p-4 text-sm leading-6 text-ink/[0.62]">
           This tool provides general sleep planning and education only. It does not diagnose or treat
           insomnia, sleep apnea, or any medical condition. Sources to review before publishing:
           CDC sleep basics, CDC adult sleep duration data, and AASM adult sleep duration guidance.

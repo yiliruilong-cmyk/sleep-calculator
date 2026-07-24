@@ -475,20 +475,20 @@ export function CheckoutPageClient() {
   const authSlot = googleUser ? (
     <div className="flex items-center gap-2">
       {googleUser.picture ? (
-        <img src={googleUser.picture} alt="" className="h-8 w-8 rounded-full border border-ink/10" />
+        <img src={googleUser.picture} alt="" className="h-8 w-8 rounded-full border border-white/20" />
       ) : (
-        <span className="grid h-8 w-8 place-items-center rounded-full bg-mist text-sm font-bold text-ink">
+        <span className="grid h-8 w-8 place-items-center rounded-full bg-white/[0.12] text-sm font-bold text-white">
           {googleUser.name.charAt(0)}
         </span>
       )}
       <div className="min-w-0">
-        <p className="truncate text-sm font-bold text-ink">{googleUser.name}</p>
-        <p className="truncate text-xs text-ink/52">{googleUser.email}</p>
+        <p className="truncate text-sm font-bold text-white">{googleUser.name}</p>
+        <p className="truncate text-xs text-white/[0.54]">{googleUser.email}</p>
       </div>
       <button
         type="button"
         onClick={handleGoogleSignOut}
-        className="rounded border border-ink/10 px-2 py-1 text-xs font-bold text-ink transition hover:bg-mist"
+        className="rounded border border-white/[0.14] px-2 py-1 text-xs font-bold text-white transition hover:bg-white/10"
       >
         Sign out
       </button>
@@ -496,31 +496,31 @@ export function CheckoutPageClient() {
   ) : (
     <a
       href="/login?next=/checkout"
-      className="inline-flex whitespace-nowrap rounded border border-ink/10 bg-white px-4 py-2 text-sm font-bold text-ink shadow-sm transition hover:bg-mist"
+      className="inline-flex whitespace-nowrap rounded border border-white/[0.18] bg-white/10 px-4 py-2 text-sm font-bold text-white shadow-sm backdrop-blur transition hover:bg-white/[0.16]"
     >
       Sign in
     </a>
   );
 
   return (
-    <main className="min-h-screen">
+    <main className="night-shell">
       <AppNavigation activePath="/checkout" authSlot={authSlot} />
-      <section className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
-        <section className="rounded-lg border border-white/70 bg-white/86 p-5 shadow-soft md:p-7">
+      <section className="night-content mx-auto grid w-full max-w-7xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
+        <section className="healing-card p-5 md:p-7">
           <p className="text-sm font-bold uppercase tracking-[0.16em] text-coral">Checkout</p>
           <h1 className="mt-3 text-4xl font-bold leading-tight text-ink md:text-5xl">
             Choose your sleep upgrade.
           </h1>
-          <p className="mt-4 text-sm leading-7 text-ink/66">
+          <p className="mt-4 text-sm leading-7 text-ink/[0.66]">
             Choose one digital sleep product and pay once. Your purchase is processed securely with
             PayPal and saved to your Google account for 30 days.
           </p>
 
-          <section className="mt-5 rounded border border-mint/25 bg-mint/8 p-4">
+          <section className="mt-5 rounded border border-mint/25 bg-white/52 p-4 backdrop-blur">
             <p className="text-sm font-bold uppercase tracking-[0.14em] text-mint">
               Available paid content
             </p>
-            <div className="mt-3 grid gap-3 text-sm leading-6 text-ink/68 sm:grid-cols-2">
+            <div className="mt-3 grid gap-3 text-sm leading-6 text-ink/[0.68] sm:grid-cols-2">
               {deliveryItems.map((item) => (
                 <p key={item}>{item}</p>
               ))}
@@ -537,7 +537,7 @@ export function CheckoutPageClient() {
                   type="button"
                   onClick={() => setSelectedOffer(offer.id)}
                   className={`rounded border p-4 text-left transition ${
-                    isSelected ? "border-dusk bg-dusk/6 shadow-soft" : "border-ink/10 bg-white hover:bg-mist"
+                    isSelected ? "border-dusk bg-dusk/[0.06] shadow-soft" : "border-white/[0.36] bg-white/[0.56] hover:bg-white/[0.72]"
                   }`}
                   aria-pressed={isSelected}
                 >
@@ -548,8 +548,8 @@ export function CheckoutPageClient() {
                     <span className="text-2xl font-bold text-ink">{offer.price}</span>
                   </div>
                   <h2 className="mt-3 text-xl font-bold text-ink">{offer.title}</h2>
-                  <p className="mt-2 text-sm leading-6 text-ink/64">{offer.description}</p>
-                  <ul className="mt-3 grid gap-1 text-sm leading-6 text-ink/68">
+                  <p className="mt-2 text-sm leading-6 text-ink/[0.64]">{offer.description}</p>
+                  <ul className="mt-3 grid gap-1 text-sm leading-6 text-ink/[0.68]">
                     {offer.bullets.slice(0, 3).map((bullet) => (
                       <li key={bullet}>{bullet}</li>
                     ))}
@@ -560,12 +560,12 @@ export function CheckoutPageClient() {
           </div>
         </section>
 
-        <aside className="rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-7">
+        <aside className="healing-card p-5 md:p-7">
           <p className="text-sm font-bold uppercase tracking-[0.14em] text-dusk">Secure payment</p>
           <h2 className="mt-2 text-2xl font-bold text-ink">
             Pay {selectedOfferDetails.price} for {selectedOfferDetails.title}
           </h2>
-          <p className="mt-3 text-sm leading-7 text-ink/64">
+          <p className="mt-3 text-sm leading-7 text-ink/[0.64]">
             Sign in with Google first. After PayPal confirms the payment, the purchase is saved to
             your Google account for 30 days.
           </p>
@@ -576,11 +576,11 @@ export function CheckoutPageClient() {
             </p>
           ) : null}
 
-          <div className="mt-5 rounded border border-ink/10 bg-mist p-4">
+          <div className="mt-5 rounded border border-white/[0.36] bg-white/[0.54] p-4">
             {!googleCredential ? (
-              <div className="rounded border border-dusk/15 bg-white p-4">
+              <div className="rounded border border-dusk/15 bg-white/74 p-4">
                 <p className="font-bold text-ink">Sign in to unlock checkout</p>
-                <p className="mt-2 text-sm leading-6 text-ink/62">
+                <p className="mt-2 text-sm leading-6 text-ink/[0.62]">
                   Use the Google sign-in button in the top navigation. PayPal will appear here after
                   your account is ready.
                 </p>
@@ -594,7 +594,7 @@ export function CheckoutPageClient() {
             ) : null}
           </div>
 
-          <section className="mt-5 rounded border border-ink/10 bg-white p-4 text-sm leading-6 text-ink/64">
+          <section className="mt-5 rounded border border-white/[0.36] bg-white/[0.54] p-4 text-sm leading-6 text-ink/[0.64]">
             <h3 className="text-lg font-bold text-ink">Purchase terms</h3>
             <p className="mt-2">
               This is a one-time digital purchase that unlocks access to the selected sleep product

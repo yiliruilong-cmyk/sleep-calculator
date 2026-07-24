@@ -191,28 +191,28 @@ export function LoginPageClient() {
 
       <section className="relative z-10 grid min-h-screen place-items-center px-5 pb-28 pt-12 md:pb-36 md:pt-8">
         <div className="w-full max-w-[540px] text-center">
-          <p className="text-sm font-bold uppercase tracking-[0.16em] text-pollen/76">Member login</p>
-          <h1 className="mt-3 text-3xl font-bold leading-tight text-white/88 md:text-4xl">
+          <p className="text-sm font-bold uppercase tracking-[0.16em] text-pollen/[0.76]">Member login</p>
+          <h1 className="mt-3 text-3xl font-bold leading-tight text-white/[0.88] md:text-4xl">
             Continue your sleep plan
           </h1>
-          <p className="mx-auto mt-3 max-w-[440px] text-sm leading-6 text-white/54">
+          <p className="mx-auto mt-3 max-w-[440px] text-sm leading-6 text-white/[0.54]">
             Sign in with Google to access your purchased plans, PDFs, and templates.
           </p>
 
           <div className="mx-auto mt-6 max-w-[300px]">
             {googleUser ? (
-              <div className="rounded-tool border border-white/18 bg-ink/58 p-4 text-left text-white shadow-lift backdrop-blur-md">
+              <div className="rounded-tool border border-white/[0.18] bg-ink/[0.58] p-4 text-left text-white shadow-lift backdrop-blur-md">
                 <div className="flex items-center gap-3">
                   {googleUser.picture ? (
                     <img src={googleUser.picture} alt="" className="h-10 w-10 rounded-full" />
                   ) : (
-                    <span className="grid h-10 w-10 place-items-center rounded-full bg-white/12 font-bold">
+                    <span className="grid h-10 w-10 place-items-center rounded-full bg-white/[0.12] font-bold">
                       {googleUser.name.charAt(0)}
                     </span>
                   )}
                   <div className="min-w-0">
                     <p className="truncate font-bold">{googleUser.name}</p>
-                    <p className="truncate text-sm text-white/58">{googleUser.email}</p>
+                    <p className="truncate text-sm text-white/[0.58]">{googleUser.email}</p>
                   </div>
                 </div>
                 <div className="mt-4 grid gap-2 sm:grid-cols-2">
@@ -232,7 +232,7 @@ export function LoginPageClient() {
                   window.history.replaceState(null, "", signInHref);
                   setIsSignInOpen(true);
                 }}
-                className="inline-flex w-full items-center justify-center rounded-full border border-pollen/38 bg-ink/36 px-10 py-4 text-lg font-bold text-white/92 shadow-[0_0_26px_rgba(255,210,91,0.14)] backdrop-blur-md transition hover:border-pollen/70 hover:bg-ink/54 focus:outline-none focus:ring-2 focus:ring-pollen/60"
+                className="inline-flex w-full items-center justify-center rounded-full border border-pollen/[0.38] bg-ink/[0.36] px-10 py-4 text-lg font-bold text-white/[0.92] shadow-[0_0_26px_rgba(255,210,91,0.14)] backdrop-blur-md transition hover:border-pollen/70 hover:bg-ink/[0.54] focus:outline-none focus:ring-2 focus:ring-pollen/60"
               >
                 Sign in
               </a>
@@ -241,25 +241,25 @@ export function LoginPageClient() {
 
           {!googleUser && isSignInOpen ? (
             <div
-              className="fixed inset-0 z-30 grid place-items-center bg-ink/72 px-5 backdrop-blur-md"
+              className="fixed inset-0 z-30 grid place-items-center bg-ink/[0.72] px-5 backdrop-blur-md"
               role="dialog"
               aria-modal="true"
               aria-label="Google sign in"
             >
-              <div className="relative w-full max-w-[380px] rounded-tool border border-white/18 bg-ink/92 p-5 text-center text-white shadow-lift">
+              <div className="relative w-full max-w-[380px] rounded-tool border border-white/[0.18] bg-ink/[0.92] p-5 text-center text-white shadow-lift">
                 <button
                   type="button"
                   onClick={() => {
                     window.history.replaceState(null, "", "/login");
                     setIsSignInOpen(false);
                   }}
-                  className="absolute right-4 top-3 text-sm font-bold text-white/58 transition hover:text-white"
+                  className="absolute right-4 top-3 text-sm font-bold text-white/[0.58] transition hover:text-white"
                 >
                   Close
                 </button>
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-pollen">Google sign in</p>
                 <h2 className="mt-2 text-2xl font-bold">Choose your account</h2>
-                <div className="mt-5 rounded-tool border border-white/14 bg-white/92 p-4 text-ink">
+                <div className="mt-5 rounded-tool border border-white/[0.14] bg-white/[0.92] p-4 text-ink">
                   {googleClientId ? (
                     <div ref={googleButtonRef} className="min-h-11" aria-label="Sign in with Google" />
                   ) : (

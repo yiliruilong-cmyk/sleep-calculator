@@ -28,14 +28,14 @@ export function SleepDebtCalculator() {
   }, [actualHours, days, targetHours]);
 
   return (
-    <section className="rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
+    <section className="healing-card p-5 md:p-6">
       <div className="grid gap-4 md:grid-cols-3">
         <label className="block">
           <span className="text-sm font-semibold text-ink">Target sleep per night</span>
           <select
             value={targetHours}
             onChange={(event) => setTargetHours(Number(event.target.value))}
-            className="mt-2 w-full rounded border border-ink/12 bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
+            className="mt-2 w-full rounded border border-ink/[0.12] bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
           >
             {[7, 7.5, 8, 8.5, 9].map((hour) => (
               <option key={hour} value={hour}>
@@ -49,7 +49,7 @@ export function SleepDebtCalculator() {
           <select
             value={actualHours}
             onChange={(event) => setActualHours(Number(event.target.value))}
-            className="mt-2 w-full rounded border border-ink/12 bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
+            className="mt-2 w-full rounded border border-ink/[0.12] bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
           >
             {[4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8].map((hour) => (
               <option key={hour} value={hour}>
@@ -63,7 +63,7 @@ export function SleepDebtCalculator() {
           <select
             value={days}
             onChange={(event) => setDays(Number(event.target.value))}
-            className="mt-2 w-full rounded border border-ink/12 bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
+            className="mt-2 w-full rounded border border-ink/[0.12] bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
           >
             {[3, 5, 7, 14, 30].map((day) => (
               <option key={day} value={day}>
@@ -75,21 +75,21 @@ export function SleepDebtCalculator() {
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-[0.82fr_1.18fr]">
-        <div className="rounded bg-ink p-5 text-white">
+        <div className="healing-card-dark p-5">
           <p className="text-sm font-bold uppercase tracking-[0.16em] text-mint">Estimated sleep debt</p>
           <p className="mt-3 text-5xl font-bold">{formatHours(result.sleepDebt)}</p>
           <p className="mt-3 text-sm leading-6 text-white/70">{result.note}</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
-          <div className="rounded border border-ink/10 bg-mist p-4">
+          <div className="rounded border border-white/[0.36] bg-white/[0.54] p-4">
             <p className="text-xs font-bold uppercase tracking-[0.12em] text-ink/45">Daily gap</p>
             <p className="mt-2 text-2xl font-bold text-ink">{formatHours(result.dailyGap)}</p>
           </div>
-          <div className="rounded border border-ink/10 bg-mist p-4">
+          <div className="rounded border border-white/[0.36] bg-white/[0.54] p-4">
             <p className="text-xs font-bold uppercase tracking-[0.12em] text-ink/45">Level</p>
             <p className="mt-2 text-2xl font-bold text-ink">{result.label}</p>
           </div>
-          <div className="rounded border border-ink/10 bg-mist p-4">
+          <div className="rounded border border-white/[0.36] bg-white/[0.54] p-4">
             <p className="text-xs font-bold uppercase tracking-[0.12em] text-ink/45">Gentle repayment</p>
             <p className="mt-2 text-2xl font-bold text-ink">{result.recoveryNights} nights</p>
           </div>

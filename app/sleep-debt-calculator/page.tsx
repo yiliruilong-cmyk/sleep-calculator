@@ -10,17 +10,17 @@ export const metadata: Metadata = {
 
 export default function SleepDebtCalculatorPage() {
   return (
-    <main className="min-h-screen">
+    <main className="night-shell">
       <SiteHeader activePath="/sleep-debt-calculator" />
-      <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-        <nav className="mb-4 text-sm font-semibold text-ink/56" aria-label="Breadcrumb">
-          <a href="/" className="hover:text-ink">
+      <section className="night-content mx-auto max-w-7xl px-4 pb-10 pt-8 sm:px-6 lg:px-8">
+        <nav className="mb-4 text-sm font-semibold text-white/[0.56]" aria-label="Breadcrumb">
+          <a href="/" className="hover:text-white">
             Home
           </a>
           <span className="mx-2">/</span>
-          <span className="text-ink">Sleep Debt Calculator</span>
+          <span className="text-white">Sleep Debt Calculator</span>
         </nav>
-        <section className="rounded-lg border border-white/70 bg-white/82 p-5 shadow-soft backdrop-blur md:p-7">
+        <section className="healing-card p-5 md:p-7">
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-coral">Sleep debt calculator</p>
           <h1 className="mt-3 max-w-3xl text-4xl font-bold leading-tight text-ink md:text-6xl">
             Estimate your sleep debt before it becomes a pattern.
@@ -41,16 +41,16 @@ export default function SleepDebtCalculatorPage() {
             ["How should I repay it?", "Add a small amount of extra sleep across several nights and keep wake-up time stable."],
             ["When should I get help?", "If sleep loss is persistent or disruptive, talk with a qualified professional."],
           ].map(([title, detail]) => (
-            <article key={title} className="rounded-lg border border-ink/10 bg-white p-4 shadow-soft">
+            <article key={title} className="healing-card p-4">
               <h2 className="text-lg font-bold text-ink">{title}</h2>
-              <p className="mt-2 text-sm leading-6 text-ink/66">{detail}</p>
+              <p className="mt-2 text-sm leading-6 text-ink/[0.66]">{detail}</p>
             </article>
           ))}
         </section>
 
-        <section className="mt-6 rounded-lg border border-dusk/15 bg-ink p-5 text-white shadow-soft md:p-6">
+        <section className="healing-card-dark mt-6 p-5 md:p-6">
           <h2 className="text-2xl font-bold">Turn the estimate into a 7-day recovery plan</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-white/68">
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-white/[0.68]">
             After calculating your sleep debt, use the main sleep calculator to choose tonight's
             bedtime and build a routine you can repeat.
           </p>

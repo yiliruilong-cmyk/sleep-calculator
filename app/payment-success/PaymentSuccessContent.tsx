@@ -166,13 +166,13 @@ export function PaymentSuccessContent() {
   }, []);
 
   return (
-    <section className="mx-auto max-w-6xl px-4 pb-12 pt-6 sm:px-6 lg:px-8">
-      <section className="rounded-lg border border-mint/25 bg-white p-6 shadow-soft md:p-8">
+    <section className="night-content mx-auto max-w-6xl px-4 pb-12 pt-8 sm:px-6 lg:px-8">
+      <section className="healing-card p-6 md:p-8">
         <p className="text-sm font-bold uppercase tracking-[0.16em] text-mint">Payment successful</p>
         <h1 className="mt-3 text-4xl font-bold leading-tight text-ink">
           Your sleep upgrade is ready.
         </h1>
-        <p className="mt-4 max-w-3xl text-sm leading-7 text-ink/66">
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-ink/[0.66]">
           This is your paid delivery page. Print it, save it as a PDF, or keep it open while you
           use the sleep plan, worksheet, PDF routine, or tracker materials. Access is saved to your
           Google account for 30 days.
@@ -185,7 +185,7 @@ export function PaymentSuccessContent() {
             ["Routine starts", snapshot.routineStart],
             ["Habit score", `${snapshot.score} ${snapshot.scoreLabel}`],
           ].map(([label, value]) => (
-            <div key={label} className="rounded border border-ink/10 bg-mist p-3">
+            <div key={label} className="rounded border border-white/[0.36] bg-white/[0.54] p-3">
               <p className="text-xs font-bold uppercase tracking-[0.12em] text-ink/45">{label}</p>
               <p className="mt-1 text-xl font-bold text-ink">{value}</p>
             </div>
@@ -201,7 +201,7 @@ export function PaymentSuccessContent() {
           </button>
           <a
             href="/"
-            className="rounded border border-ink/14 px-4 py-3 text-center font-bold text-ink transition hover:bg-mist"
+            className="rounded border border-ink/[0.14] px-4 py-3 text-center font-bold text-ink transition hover:bg-mist"
           >
             Back to calculator
           </a>
@@ -209,26 +209,26 @@ export function PaymentSuccessContent() {
       </section>
 
       <section className="mt-6 grid gap-6 lg:grid-cols-[0.88fr_1.12fr]">
-        <aside className="rounded-lg border border-ink/10 bg-white p-6 shadow-soft md:p-8">
+        <aside className="healing-card p-6 md:p-8">
           <p className="text-sm font-bold uppercase tracking-[0.16em] text-coral">Your focus</p>
           <h2 className="mt-2 text-3xl font-bold text-ink">Start with the highest-leverage fixes.</h2>
           <div className="mt-5 grid gap-3">
             {snapshot.improvements.map((item) => (
-              <p key={item} className="rounded border border-ink/10 bg-mist p-3 text-sm leading-6 text-ink/68">
+              <p key={item} className="rounded border border-white/[0.36] bg-white/[0.54] p-3 text-sm leading-6 text-ink/[0.68]">
                 {item}
               </p>
             ))}
           </div>
-          <div className="mt-5 rounded border border-pollen/35 bg-pollen/12 p-4">
+          <div className="mt-5 rounded border border-pollen/[0.35] bg-pollen/[0.12] p-4">
             <p className="font-bold text-ink">Tonight&apos;s rule</p>
-            <p className="mt-2 text-sm leading-6 text-ink/68">
+            <p className="mt-2 text-sm leading-6 text-ink/[0.68]">
               Start winding down at <strong>{snapshot.routineStart}</strong>, get in bed around{" "}
               <strong>{snapshot.bedtime}</strong>, and protect <strong>{snapshot.timeInBed}</strong> in bed.
             </p>
           </div>
-          <div className="mt-5 rounded border border-ink/10 bg-mist p-4">
+          <div className="mt-5 rounded border border-white/[0.36] bg-white/[0.54] p-4">
             <p className="font-bold text-ink">Personal notes</p>
-            <ul className="mt-2 grid gap-2 text-sm leading-6 text-ink/64">
+            <ul className="mt-2 grid gap-2 text-sm leading-6 text-ink/[0.64]">
               {snapshot.notes.map((note) => (
                 <li key={note}>{note}</li>
               ))}
@@ -236,36 +236,36 @@ export function PaymentSuccessContent() {
           </div>
         </aside>
 
-        <section className="rounded-lg border border-ink/10 bg-white p-6 shadow-soft md:p-8">
+        <section className="healing-card p-6 md:p-8">
           <p className="text-sm font-bold uppercase tracking-[0.16em] text-dusk">7-day plan</p>
           <h2 className="mt-2 text-3xl font-bold text-ink">One daily reset, then one morning review.</h2>
           <div className="mt-5 grid gap-4">
             {planDays.map((day) => (
-              <article key={day.day} className="rounded border border-ink/10 bg-mist p-4">
+              <article key={day.day} className="rounded border border-white/[0.36] bg-white/[0.54] p-4">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <p className="text-sm font-bold text-coral">{day.day}</p>
                     <h3 className="mt-1 text-xl font-bold text-ink">{day.title}</h3>
                   </div>
-                  <span className="rounded bg-white px-3 py-1 text-sm font-bold text-ink/68">{day.goal}</span>
+                  <span className="rounded bg-white/[0.72] px-3 py-1 text-sm font-bold text-ink/[0.68]">{day.goal}</span>
                 </div>
                 <div className="mt-4 grid gap-3 md:grid-cols-[1fr_0.8fr]">
-                  <div className="rounded border border-white bg-white p-3">
+                  <div className="rounded border border-white/50 bg-white/70 p-3">
                     <p className="font-bold text-ink">Tonight</p>
-                    <ul className="mt-2 grid gap-2 text-sm leading-6 text-ink/68">
+                    <ul className="mt-2 grid gap-2 text-sm leading-6 text-ink/[0.68]">
                       {day.tonight.map((item) => (
                         <li key={item}>{item}</li>
                       ))}
                     </ul>
                   </div>
                   <div className="grid gap-3">
-                    <div className="rounded border border-white bg-white p-3">
+                    <div className="rounded border border-white/50 bg-white/70 p-3">
                       <p className="font-bold text-ink">Morning review</p>
-                      <p className="mt-2 text-sm leading-6 text-ink/68">{day.morning}</p>
+                      <p className="mt-2 text-sm leading-6 text-ink/[0.68]">{day.morning}</p>
                     </div>
-                    <div className="rounded border border-white bg-white p-3">
+                    <div className="rounded border border-white/50 bg-white/70 p-3">
                       <p className="font-bold text-ink">Track</p>
-                      <p className="mt-2 text-sm leading-6 text-ink/68">{day.tracking}</p>
+                      <p className="mt-2 text-sm leading-6 text-ink/[0.68]">{day.tracking}</p>
                     </div>
                   </div>
                 </div>
@@ -276,7 +276,7 @@ export function PaymentSuccessContent() {
       </section>
 
       <section className="mt-6 grid gap-6 lg:grid-cols-2">
-        <section className="rounded-lg border border-ink/10 bg-white p-6 shadow-soft">
+        <section className="healing-card p-6">
           <p className="text-sm font-bold uppercase tracking-[0.16em] text-dusk">Sleep Habit Score</p>
           <h2 className="mt-2 text-2xl font-bold text-ink">Use this worksheet once per week.</h2>
           <div className="mt-4 overflow-hidden rounded border border-ink/10">
@@ -284,7 +284,7 @@ export function PaymentSuccessContent() {
               <div key={name} className="grid gap-2 border-b border-ink/10 p-3 last:border-b-0 sm:grid-cols-[1fr_72px]">
                 <div>
                   <p className="font-bold text-ink">{name}</p>
-                  <p className="mt-1 text-sm leading-6 text-ink/62">{detail}</p>
+                  <p className="mt-1 text-sm leading-6 text-ink/[0.62]">{detail}</p>
                 </div>
                 <p className="font-bold text-dusk">{points} pts</p>
               </div>
@@ -292,25 +292,25 @@ export function PaymentSuccessContent() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-ink/10 bg-white p-6 shadow-soft">
+        <section className="healing-card p-6">
           <p className="text-sm font-bold uppercase tracking-[0.16em] text-pollen">Notion tracker</p>
           <h2 className="mt-2 text-2xl font-bold text-ink">Create a simple sleep database.</h2>
           <div className="mt-4 overflow-hidden rounded border border-ink/10">
             {notionFields.map(([field, type]) => (
               <div key={field} className="grid grid-cols-[1fr_0.75fr] border-b border-ink/10 p-3 text-sm last:border-b-0">
                 <p className="font-bold text-ink">{field}</p>
-                <p className="text-ink/62">{type}</p>
+                <p className="text-ink/[0.62]">{type}</p>
               </div>
             ))}
           </div>
-          <p className="mt-4 text-sm leading-6 text-ink/62">
+          <p className="mt-4 text-sm leading-6 text-ink/[0.62]">
             Add one weekly view grouped by sleep quality, then compare caffeine cutoff, screen cutoff,
             and actual bedtime. The goal is pattern recognition, not perfect tracking.
           </p>
         </section>
       </section>
 
-      <section className="mt-6 rounded-lg border border-ink/10 bg-white p-6 text-sm leading-7 text-ink/66 shadow-soft">
+      <section className="healing-card mt-6 p-6 text-sm leading-7 text-ink/[0.66]">
         <h2 className="text-2xl font-bold text-ink">Important note</h2>
         <p className="mt-3">
           This product is for general sleep planning and education only. It is not medical advice and

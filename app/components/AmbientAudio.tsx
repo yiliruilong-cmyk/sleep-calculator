@@ -133,11 +133,10 @@ export function AmbientAudio() {
     <button
       type="button"
       onClick={() => setIsEnabled((current) => !current)}
-      className="fixed bottom-4 right-4 z-[70] inline-flex min-h-11 items-center gap-2 rounded-full border border-white/22 bg-ink/72 px-4 py-3 text-sm font-bold text-white shadow-lift backdrop-blur-md transition hover:bg-ink/88 print:hidden"
+      className="fixed bottom-4 right-4 z-[70] inline-flex min-h-11 items-center gap-2 rounded-full border border-white/[0.22] bg-ink/[0.72] px-4 py-3 text-sm font-bold text-white shadow-lift backdrop-blur-md transition hover:bg-ink/[0.88] print:hidden"
       aria-pressed={isEnabled}
       aria-label={isEnabled ? "Turn sound off" : "Turn sound on"}
     >
-      <span aria-hidden="true">♪</span>
       {isEnabled ? "Sound on" : "Sound off"}
     </button>
   );

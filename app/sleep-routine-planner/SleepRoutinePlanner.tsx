@@ -37,7 +37,7 @@ export function SleepRoutinePlanner() {
   }, [latency, sleepHours, style, wakeTime, windDown]);
 
   return (
-    <section className="rounded-lg border border-ink/10 bg-white p-5 shadow-soft md:p-6">
+    <section className="healing-card p-5 md:p-6">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         <label className="block">
           <span className="text-sm font-semibold text-ink">Wake-up time</span>
@@ -45,7 +45,7 @@ export function SleepRoutinePlanner() {
             type="time"
             value={wakeTime}
             onChange={(event) => setWakeTime(event.target.value)}
-            className="mt-2 w-full rounded border border-ink/12 bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
+            className="mt-2 w-full rounded border border-ink/[0.12] bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
           />
         </label>
         <label className="block">
@@ -53,7 +53,7 @@ export function SleepRoutinePlanner() {
           <select
             value={sleepHours}
             onChange={(event) => setSleepHours(Number(event.target.value))}
-            className="mt-2 w-full rounded border border-ink/12 bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
+            className="mt-2 w-full rounded border border-ink/[0.12] bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
           >
             {[7, 7.5, 8, 8.5, 9].map((hour) => (
               <option key={hour} value={hour}>
@@ -67,7 +67,7 @@ export function SleepRoutinePlanner() {
           <select
             value={windDown}
             onChange={(event) => setWindDown(Number(event.target.value))}
-            className="mt-2 w-full rounded border border-ink/12 bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
+            className="mt-2 w-full rounded border border-ink/[0.12] bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
           >
             {[30, 45, 60, 90].map((minutes) => (
               <option key={minutes} value={minutes}>
@@ -81,7 +81,7 @@ export function SleepRoutinePlanner() {
           <select
             value={latency}
             onChange={(event) => setLatency(Number(event.target.value))}
-            className="mt-2 w-full rounded border border-ink/12 bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
+            className="mt-2 w-full rounded border border-ink/[0.12] bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
           >
             {[5, 10, 15, 20, 30, 45].map((minutes) => (
               <option key={minutes} value={minutes}>
@@ -95,7 +95,7 @@ export function SleepRoutinePlanner() {
           <select
             value={style}
             onChange={(event) => setStyle(event.target.value)}
-            className="mt-2 w-full rounded border border-ink/12 bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
+            className="mt-2 w-full rounded border border-ink/[0.12] bg-white px-3 py-3 text-ink outline-none focus:border-dusk"
           >
             <option value="calm">Calm</option>
             <option value="busy">Busy mind</option>
@@ -105,7 +105,7 @@ export function SleepRoutinePlanner() {
       </div>
 
       <div className="mt-6 grid gap-5 lg:grid-cols-[0.75fr_1.25fr]">
-        <div className="rounded bg-ink p-5 text-white">
+        <div className="healing-card-dark p-5">
           <p className="text-sm font-bold uppercase tracking-[0.16em] text-mint">Recommended bedtime</p>
           <p className="mt-3 text-5xl font-bold">{formatTime(plan.bedtime)}</p>
           <p className="mt-3 text-sm leading-6 text-white/70">
@@ -114,11 +114,11 @@ export function SleepRoutinePlanner() {
         </div>
         <div className="grid gap-3">
           {plan.steps.map((step) => (
-            <article key={`${step.time}-${step.title}`} className="grid grid-cols-[92px_1fr] gap-3 rounded border border-ink/10 bg-mist p-3">
+            <article key={`${step.time}-${step.title}`} className="grid grid-cols-[92px_1fr] gap-3 rounded border border-white/[0.36] bg-white/[0.54] p-3">
               <time className="pt-1 text-sm font-bold text-coral">{step.time}</time>
               <div>
                 <h2 className="font-bold text-ink">{step.title}</h2>
-                <p className="mt-1 text-sm leading-6 text-ink/64">{step.detail}</p>
+                <p className="mt-1 text-sm leading-6 text-ink/[0.64]">{step.detail}</p>
               </div>
             </article>
           ))}

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function PaymentSuccessPage() {
   return (
-    <main className="min-h-screen">
+    <main className="night-shell">
       <SiteHeader />
       <PaymentSuccessContent />
     </main>

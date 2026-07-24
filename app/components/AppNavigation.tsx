@@ -21,17 +21,17 @@ export function AppNavigation({ activePath = "/", authSlot, locale = defaultLoca
   const activeLocale = getLocaleInfo(locale);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-ink/10 bg-white/92 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-white/10 bg-ink/[0.76] text-white backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <a href="/" className="flex min-w-0 items-center gap-3" aria-label="Sleep Calculator home">
-          <span className="grid h-10 w-10 place-items-center rounded bg-ink text-xl font-bold text-white">
+          <span className="grid h-10 w-10 place-items-center rounded bg-white text-xl font-bold text-ink">
             S
           </span>
           <span className="leading-tight">
             <span className="block text-sm font-bold tracking-[0.12em] text-mint">
               Better Sleep Tools
             </span>
-            <span className="block text-lg font-bold text-ink">Sleep Calculator</span>
+            <span className="block text-lg font-bold text-white">Sleep Calculator</span>
           </span>
         </a>
 
@@ -44,8 +44,8 @@ export function AppNavigation({ activePath = "/", authSlot, locale = defaultLoca
                 key={item.href}
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
-                className={`whitespace-nowrap text-base font-bold transition hover:text-ink ${
-                  isActive ? "text-ink" : "text-ink/68"
+                className={`whitespace-nowrap text-base font-bold transition hover:text-white ${
+                  isActive ? "text-white" : "text-white/[0.66]"
                 }`}
               >
                 {item.label}
@@ -58,17 +58,17 @@ export function AppNavigation({ activePath = "/", authSlot, locale = defaultLoca
           {authSlot ? <div className="min-w-[180px] max-w-[280px] overflow-hidden">{authSlot}</div> : null}
 
           <details className="group relative hidden sm:block">
-            <summary className="list-none rounded border border-ink/10 px-3 py-2 text-sm font-bold text-ink transition hover:bg-mist">
+            <summary className="list-none rounded border border-white/[0.14] bg-white/[0.08] px-3 py-2 text-sm font-bold text-white transition hover:bg-white/[0.12]">
               {activeLocale.label}
             </summary>
-            <div className="absolute right-0 top-full mt-2 w-44 rounded-lg border border-ink/10 bg-white p-2 shadow-soft">
+            <div className="absolute right-0 top-full mt-2 w-44 rounded-lg border border-white/[0.14] bg-ink/[0.94] p-2 shadow-soft backdrop-blur-xl">
               {locales.map((item) => (
                 <a
                   key={item.code}
                   href={item.path}
                   hrefLang={item.htmlLang}
-                  className={`block rounded px-3 py-2 text-sm font-bold transition hover:bg-mist ${
-                    item.code === activeLocale.code ? "text-dusk" : "text-ink/70"
+                  className={`block rounded px-3 py-2 text-sm font-bold transition hover:bg-white/10 ${
+                    item.code === activeLocale.code ? "text-pollen" : "text-white/70"
                   }`}
                 >
                   {item.label}
@@ -78,26 +78,26 @@ export function AppNavigation({ activePath = "/", authSlot, locale = defaultLoca
           </details>
 
           <details className="group relative md:hidden">
-            <summary className="list-none rounded border border-ink/10 px-3 py-2 text-sm font-bold text-ink">
+            <summary className="list-none rounded border border-white/[0.14] bg-white/[0.08] px-3 py-2 text-sm font-bold text-white">
               Menu
             </summary>
-            <div className="absolute right-0 top-full mt-2 w-[min(88vw,360px)] rounded-lg border border-ink/10 bg-white p-3 shadow-soft">
+            <div className="absolute right-0 top-full mt-2 w-[min(88vw,360px)] rounded-lg border border-white/[0.14] bg-ink/[0.94] p-3 shadow-soft backdrop-blur-xl">
               <div className="grid gap-2">
                 {navItems.map((item) => (
-                  <a key={item.href} href={item.href} className="rounded bg-mist p-3 text-sm font-bold text-ink">
+                  <a key={item.href} href={item.href} className="rounded bg-white/[0.08] p-3 text-sm font-bold text-white">
                     {item.label}
                   </a>
                 ))}
-                <a href="/checkout" className="rounded bg-ink px-4 py-3 text-center text-sm font-bold text-white">
+                <a href="/checkout" className="rounded bg-mint px-4 py-3 text-center text-sm font-bold text-ink">
                   Pricing and Upgrades
                 </a>
-                <div className="grid gap-2 border-t border-ink/10 pt-2">
+                <div className="grid gap-2 border-t border-white/10 pt-2">
                   {locales.map((item) => (
                     <a
                       key={item.code}
                       href={item.path}
                       hrefLang={item.htmlLang}
-                      className="rounded bg-white px-3 py-2 text-sm font-bold text-ink/70"
+                      className="rounded bg-white/[0.08] px-3 py-2 text-sm font-bold text-white/70"
                     >
                       {item.label}
                     </a>

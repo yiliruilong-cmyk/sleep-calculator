@@ -48,18 +48,18 @@ export default function SevenDayBetterSleepPlanPage() {
   }, []);
 
   return (
-    <main className="min-h-screen">
+    <main className="night-shell">
       <AppNavigation activePath="/7-day-better-sleep-plan" />
 
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <section className="rounded-lg border border-white/70 bg-white/86 p-6 shadow-soft md:p-8">
+      <section className="night-content mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <section className="healing-card p-6 md:p-8">
           <p className="text-sm font-bold uppercase tracking-[0.16em] text-coral">7-Day Better Sleep Plan</p>
           <div className="mt-4 grid gap-6 lg:grid-cols-[1fr_360px] lg:items-start">
             <div>
               <h1 className="text-4xl font-bold leading-tight text-ink md:text-6xl">
                 Turn one sleep calculation into a practical 7-day reset.
               </h1>
-              <p className="mt-4 max-w-3xl text-base leading-8 text-ink/68">
+              <p className="mt-4 max-w-3xl text-base leading-8 text-ink/[0.68]">
                 The free calculator gives you the timing. This plan gives you the daily structure:
                 what to do tonight, what to check tomorrow morning, and how to make the routine
                 easier to repeat.
@@ -73,14 +73,14 @@ export default function SevenDayBetterSleepPlanPage() {
                 </a>
                 <a
                   href="/"
-                  className="rounded border border-ink/14 px-5 py-3 text-center font-bold text-ink transition hover:bg-mist"
+                  className="rounded border border-ink/[0.14] px-5 py-3 text-center font-bold text-ink transition hover:bg-mist"
                 >
                   Recalculate first
                 </a>
               </div>
             </div>
 
-            <aside className="rounded border border-mint/25 bg-mint/8 p-5">
+            <aside className="rounded-lg border border-mint/30 bg-white/50 p-5 backdrop-blur">
               <p className="text-sm font-bold uppercase tracking-[0.14em] text-mint">Your current result</p>
               <div className="mt-4 grid gap-3">
                 {[
@@ -90,7 +90,7 @@ export default function SevenDayBetterSleepPlanPage() {
                   ["Routine start", snapshot?.routineStart || "Saved after calculation"],
                   ["Habit score", snapshot?.score ? `${snapshot.score} ${snapshot.scoreLabel || ""}` : "Saved after calculation"],
                 ].map(([label, value]) => (
-                  <div key={label} className="rounded bg-white p-3">
+                  <div key={label} className="rounded border border-white/[0.36] bg-white/[0.62] p-3">
                     <p className="text-xs font-bold uppercase tracking-[0.12em] text-ink/45">{label}</p>
                     <p className="mt-1 text-lg font-bold text-ink">{value}</p>
                   </div>
@@ -101,39 +101,39 @@ export default function SevenDayBetterSleepPlanPage() {
         </section>
 
         <section className="mt-6 grid gap-6 lg:grid-cols-[0.86fr_1.14fr]">
-          <section className="rounded-lg border border-ink/10 bg-white p-6 shadow-soft">
+          <section className="healing-card p-6">
             <p className="text-sm font-bold uppercase tracking-[0.16em] text-dusk">Included</p>
             <h2 className="mt-2 text-2xl font-bold text-ink">What the $7 plan gives you</h2>
-            <ul className="mt-5 grid gap-3 text-sm leading-7 text-ink/68">
+            <ul className="mt-5 grid gap-3 text-sm leading-7 text-ink/[0.68]">
               {included.map((item) => (
-                <li key={item} className="rounded border border-ink/10 bg-mist p-3">
+                <li key={item} className="rounded border border-white/[0.36] bg-white/[0.54] p-3">
                   {item}
                 </li>
               ))}
             </ul>
           </section>
 
-          <section className="rounded-lg border border-ink/10 bg-white p-6 shadow-soft">
+          <section className="healing-card p-6">
             <p className="text-sm font-bold uppercase tracking-[0.16em] text-coral">Preview</p>
             <h2 className="mt-2 text-2xl font-bold text-ink">The 7-day structure</h2>
             <div className="mt-5 grid gap-3">
               {previewDays.map(([day, title, detail]) => (
-                <article key={day} className="rounded border border-ink/10 bg-mist p-4">
+                <article key={day} className="rounded border border-white/[0.36] bg-white/[0.54] p-4">
                   <p className="text-sm font-bold text-coral">{day}</p>
                   <h3 className="mt-1 text-lg font-bold text-ink">{title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-ink/64">{detail}</p>
+                  <p className="mt-2 text-sm leading-6 text-ink/[0.64]">{detail}</p>
                 </article>
               ))}
             </div>
           </section>
         </section>
 
-        <section className="mt-6 rounded-lg border border-dusk/15 bg-ink p-6 text-white shadow-soft">
+        <section className="healing-card-dark mt-6 p-6">
           <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-mint">One-time purchase</p>
               <h2 className="mt-2 text-2xl font-bold">Start tonight for $7.</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-white/68">
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-white/[0.68]">
                 No subscription and no automatic renewal. After payment, the full delivery page is
                 available on your Google account for 30 days.
               </p>
