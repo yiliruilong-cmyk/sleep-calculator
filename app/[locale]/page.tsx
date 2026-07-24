@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { AppNavigation } from "../components/AppNavigation";
+import { SiteFooter } from "../components/SiteFooter";
+import { SiteHeader } from "../components/SiteHeader";
 import {
   getLanguageAlternates,
   getLocaleInfo,
@@ -42,7 +43,20 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
       title: copy.title,
       description: copy.description,
       url: localeInfo.path,
+      siteName: "Sleep Calculator",
+      locale: localeInfo.htmlLang,
       type: "website",
+      images: ["/login-forest.png"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: copy.title,
+      description: copy.description,
+      images: ["/login-forest.png"],
+    },
+    robots: {
+      index: true,
+      follow: true,
     },
   };
 }
@@ -57,7 +71,7 @@ export default async function LocalizedLandingPage({ params }: LocalePageProps) 
 
   return (
     <main className="night-shell" lang={localeInfo.htmlLang}>
-      <AppNavigation activePath="/" locale={typedLocale} />
+      <SiteHeader activePath="/" locale={typedLocale} />
 
       <section className="night-content mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <section className="healing-card p-6 md:p-8">
@@ -145,6 +159,7 @@ export default async function LocalizedLandingPage({ params }: LocalePageProps) 
             ))}
           </div>
         </section>
+        <SiteFooter />
       </section>
     </main>
   );

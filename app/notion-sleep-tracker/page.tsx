@@ -1,11 +1,13 @@
-import type { Metadata } from "next";
 import { SiteHeader } from "../components/SiteHeader";
+import { SiteFooter } from "../components/SiteFooter";
+import { createPageMetadata } from "../lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Notion Sleep Tracker Template: Track Bedtime and Sleep Quality",
   description:
     "Preview a Notion sleep tracker template for bedtime, wake-up time, sleep quality, caffeine, screens, and weekly trends.",
-};
+  path: "/notion-sleep-tracker",
+});
 
 const templateBlocks = [
   {
@@ -112,6 +114,7 @@ export default function NotionSleepTrackerPage() {
             Open Sleep Calculator
           </a>
         </section>
+        <SiteFooter />
       </section>
     </main>
   );

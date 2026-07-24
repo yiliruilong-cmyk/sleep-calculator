@@ -33,10 +33,13 @@ export function getLocaleInfo(locale: LocaleCode) {
 }
 
 export function getLanguageAlternates() {
-  return locales.reduce<Record<string, string>>((links, locale) => {
-    links[locale.htmlLang] = locale.path;
-    return links;
+  const links = locales.reduce<Record<string, string>>((alternates, locale) => {
+    alternates[locale.htmlLang] = locale.path;
+    return alternates;
   }, {});
+
+  links["x-default"] = "/";
+  return links;
 }
 
 export const localizedLandingCopy: Record<

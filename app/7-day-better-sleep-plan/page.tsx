@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AppNavigation } from "../components/AppNavigation";
+import { SiteFooter } from "../components/SiteFooter";
+import { SiteHeader } from "../components/SiteHeader";
+import { StructuredData } from "../components/StructuredData";
+import { siteUrl } from "../lib/i18n";
 
 type PlanSnapshot = {
   bedtime?: string;
@@ -49,7 +52,27 @@ export default function SevenDayBetterSleepPlanPage() {
 
   return (
     <main className="night-shell">
-      <AppNavigation activePath="/7-day-better-sleep-plan" />
+      <StructuredData
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: "7-Day Better Sleep Plan",
+          description:
+            "A seven-day digital sleep planning guide with evening actions, morning reviews, and a repeatable bedtime routine.",
+          brand: {
+            "@type": "Brand",
+            name: "Sleep Calculator",
+          },
+          offers: {
+            "@type": "Offer",
+            url: `${siteUrl}/checkout?offer=7-day-plan`,
+            priceCurrency: "USD",
+            price: "7.00",
+            availability: "https://schema.org/InStock",
+          },
+        }}
+      />
+      <SiteHeader activePath="/7-day-better-sleep-plan" />
 
       <section className="night-content mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <section className="healing-card p-6 md:p-8">
@@ -146,6 +169,7 @@ export default function SevenDayBetterSleepPlanPage() {
             </a>
           </div>
         </section>
+        <SiteFooter />
       </section>
     </main>
   );

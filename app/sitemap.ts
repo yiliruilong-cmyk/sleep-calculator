@@ -8,17 +8,17 @@ const productPaths = [
   "/7-day-better-sleep-plan",
   "/notion-sleep-tracker",
   "/sleep-debt-calculator",
-  "/checkout",
+  "/about",
+  "/privacy",
+  "/terms",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
   const languageAlternates = getLanguageAlternates();
 
   return [
     {
       url: siteUrl,
-      lastModified: now,
       changeFrequency: "weekly",
       priority: 1,
       alternates: {
@@ -31,7 +31,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       .filter((locale) => locale.code !== "en")
       .map((locale) => ({
         url: `${siteUrl}${locale.path}`,
-        lastModified: now,
         changeFrequency: "weekly" as const,
         priority: 0.82,
         alternates: {
@@ -45,9 +44,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       })),
     ...productPaths.map((path) => ({
       url: `${siteUrl}${path}`,
-      lastModified: now,
-      changeFrequency: "weekly" as const,
-      priority: path === "/checkout" ? 0.55 : 0.72,
+      changeFrequency: path === "/privacy" || path === "/terms" ? ("yearly" as const) : ("weekly" as const),
+      priority: path === "/privacy" || path === "/terms" ? 0.3 : 0.72,
     })),
   ];
 }

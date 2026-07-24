@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
 import { SiteHeader } from "../components/SiteHeader";
+import { createPageMetadata } from "../lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Payment Cancelled: Sleep Calculator",
   description: "Your PayPal payment was cancelled.",
-};
+  path: "/payment-cancelled",
+  noIndex: true,
+});
 
 export default function PaymentCancelledPage() {
   return (

@@ -1,14 +1,12 @@
-import type { Metadata } from "next";
+import { createPageMetadata } from "../lib/seo";
 import { LoginPageClient } from "./LoginPageClient";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Login: Sleep Calculator",
   description: "Sign in to Sleep Calculator with Google and continue your sleep planning flow.",
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+  path: "/login",
+  noIndex: true,
+});
 
 export default function LoginPage() {
   return <LoginPageClient />;

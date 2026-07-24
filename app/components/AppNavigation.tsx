@@ -22,16 +22,16 @@ export function AppNavigation({ activePath = "/", authSlot, locale = defaultLoca
 
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-ink/[0.76] text-white backdrop-blur-xl">
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-        <a href="/" className="flex min-w-0 items-center gap-3" aria-label="Sleep Calculator home">
-          <span className="grid h-10 w-10 place-items-center rounded bg-white text-xl font-bold text-ink">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-4 py-3 sm:gap-4 sm:px-6 lg:px-8">
+        <a href="/" className="flex min-w-0 items-center gap-2 sm:gap-3" aria-label="Sleep Calculator home">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded bg-white text-lg font-bold text-ink sm:h-10 sm:w-10 sm:text-xl">
             S
           </span>
           <span className="leading-tight">
-            <span className="block text-sm font-bold tracking-[0.12em] text-mint">
+            <span className="hidden text-sm font-bold tracking-[0.12em] text-mint sm:block">
               Better Sleep Tools
             </span>
-            <span className="block text-lg font-bold text-white">Sleep Calculator</span>
+            <span className="block whitespace-nowrap text-sm font-bold text-white sm:text-lg">Sleep Calculator</span>
           </span>
         </a>
 
@@ -55,7 +55,7 @@ export function AppNavigation({ activePath = "/", authSlot, locale = defaultLoca
         </nav>
 
         <div className="flex min-w-0 items-center justify-end gap-2">
-          {authSlot ? <div className="min-w-[180px] max-w-[280px] overflow-hidden">{authSlot}</div> : null}
+          {authSlot ? <div className="shrink-0">{authSlot}</div> : null}
 
           <details className="group relative hidden sm:block">
             <summary className="list-none rounded border border-white/[0.14] bg-white/[0.08] px-3 py-2 text-sm font-bold text-white transition hover:bg-white/[0.12]">
@@ -88,9 +88,6 @@ export function AppNavigation({ activePath = "/", authSlot, locale = defaultLoca
                     {item.label}
                   </a>
                 ))}
-                <a href="/checkout" className="rounded bg-mint px-4 py-3 text-center text-sm font-bold text-ink">
-                  Pricing and Upgrades
-                </a>
                 <div className="grid gap-2 border-t border-white/10 pt-2">
                   {locales.map((item) => (
                     <a

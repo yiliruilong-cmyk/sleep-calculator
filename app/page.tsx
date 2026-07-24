@@ -2,6 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AppNavigation } from "./components/AppNavigation";
+import { SiteFooter } from "./components/SiteFooter";
+import { StructuredData } from "./components/StructuredData";
+import { siteUrl } from "./lib/i18n";
 
 type Mode = "wake" | "bed" | "duration";
 
@@ -67,6 +70,68 @@ const modeCopy: Record<Mode, string> = {
   wake: "I want to wake up at...",
   bed: "I want to go to bed at...",
   duration: "I want to sleep for...",
+};
+
+const homeStructuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}/#website`,
+      url: siteUrl,
+      name: "Sleep Calculator",
+      inLanguage: "en",
+    },
+    {
+      "@type": "WebApplication",
+      "@id": `${siteUrl}/#calculator`,
+      name: "Sleep Calculator",
+      url: siteUrl,
+      applicationCategory: "HealthApplication",
+      operatingSystem: "Any",
+      browserRequirements: "Requires JavaScript",
+      isAccessibleForFree: true,
+      description:
+        "A free planning tool for estimating bedtime, wake-up time, sleep cycle options, a sleep habit score, and a wind-down routine.",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "What is a sleep calculator?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "It is a planning tool that estimates bedtime or wake-up time from a simplified sleep-cycle model and your usual time to fall asleep.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Is 7.5 hours of sleep enough?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Sleep needs vary. Many adults are advised to get at least 7 hours of sleep, while this calculator uses cycle estimates only as a planning aid.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Can this diagnose insomnia?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "No. It is not a diagnostic tool. Persistent sleep problems should be discussed with a qualified professional.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What if I wake up during the night?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Use the results as a starting point, then adjust your routine and environment. If the problem continues, consider professional guidance.",
+          },
+        },
+      ],
+    },
+  ],
 };
 
 function toMinutes(value: string, fallback = 0) {
@@ -392,6 +457,7 @@ export default function Home() {
 
   return (
     <main className="night-shell">
+      <StructuredData data={homeStructuredData} />
       <AppNavigation activePath="/" authSlot={authSlot} />
       <section className="night-content mx-auto grid w-full max-w-7xl gap-6 px-4 py-5 sm:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:px-8 lg:py-8">
         <div className="flex flex-col gap-5">
@@ -704,7 +770,7 @@ export default function Home() {
               <h2 className="mt-2 text-2xl font-bold text-ink">Make the bedtime easier to follow</h2>
               <p className="mt-3 text-sm leading-7 text-ink/[0.66]">
                 The calculator gives the time. Your room and evening cues make the plan easier to
-                keep. Use this area later for clearly labeled affiliate recommendations.
+                keep. Start with dimmer light, steadier sound, and a comfortably cool room.
               </p>
             </div>
             <div className="grid w-full gap-3 sm:grid-cols-3 lg:max-w-xl">
@@ -727,13 +793,14 @@ export default function Home() {
             <h2 className="text-2xl font-bold text-ink">How this calculator works</h2>
             <p className="mt-3 text-sm leading-7 text-ink/[0.68]">
               Start with either a wake-up time or a bedtime. The calculator adds your estimated time
-              to fall asleep and maps the night into 90-minute cycles. It then highlights the option
-              closest to your sleep goal and builds a practical routine around it.
+              to fall asleep and compares simplified 90-minute cycle estimates. Real sleep cycles
+              commonly vary, so use the result as a practical starting point rather than an exact
+              biological schedule.
             </p>
             <div className="mt-5 grid gap-3">
               {[
                 ["Sleep latency", "Your usual time to fall asleep is added as a buffer."],
-                ["Sleep cycles", "The MVP uses 4, 5, and 6 cycle options."],
+                ["Sleep cycles", "Compare 4, 5, and 6 estimated cycles; actual cycle length varies."],
                 ["Routine timing", "The wind-down plan starts before your recommended bedtime."],
               ].map(([title, detail]) => (
                 <div key={title} className="rounded border border-white/[0.36] bg-white/[0.54] p-3">
@@ -750,11 +817,11 @@ export default function Home() {
               {[
                 [
                   "What is a sleep calculator?",
-                  "It is a planning tool that estimates bedtime or wake-up time from sleep cycles and your usual time to fall asleep.",
+                  "It is a planning tool that estimates bedtime or wake-up time from a simplified sleep-cycle model and your usual time to fall asleep.",
                 ],
                 [
                   "Is 7.5 hours of sleep enough?",
-                  "For many adults, 7.5 hours fits five 90-minute cycles, but personal needs vary. Many adult sleep recommendations point to at least 7 hours.",
+                  "Sleep needs vary. Many adults are advised to get at least 7 hours, while this calculator uses cycle estimates only as a planning aid.",
                 ],
                 [
                   "Can this diagnose insomnia?",
@@ -777,11 +844,7 @@ export default function Home() {
           </section>
         </div>
 
-        <footer className="healing-card-soft mt-6 p-4 text-sm leading-6 text-ink/[0.62]">
-          This tool provides general sleep planning and education only. It does not diagnose or treat
-          insomnia, sleep apnea, or any medical condition. Sources to review before publishing:
-          CDC sleep basics, CDC adult sleep duration data, and AASM adult sleep duration guidance.
-        </footer>
+        <SiteFooter />
       </section>
     </main>
   );

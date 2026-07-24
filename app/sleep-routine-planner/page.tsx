@@ -1,12 +1,14 @@
-import type { Metadata } from "next";
 import { SiteHeader } from "../components/SiteHeader";
+import { SiteFooter } from "../components/SiteFooter";
+import { createPageMetadata } from "../lib/seo";
 import { SleepRoutinePlanner } from "./SleepRoutinePlanner";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Sleep Routine Planner: Build a Personalized Bedtime Routine",
   description:
     "Create a personalized sleep routine with bedtime, wind-down timing, room preparation, and morning wake-up goals.",
-};
+  path: "/sleep-routine-planner",
+});
 
 export default function SleepRoutinePlannerPage() {
   return (
@@ -61,6 +63,7 @@ export default function SleepRoutinePlannerPage() {
             Open the sleep calculator
           </a>
         </section>
+        <SiteFooter />
       </section>
     </main>
   );

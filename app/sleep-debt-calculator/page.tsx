@@ -1,12 +1,14 @@
-import type { Metadata } from "next";
 import { SiteHeader } from "../components/SiteHeader";
+import { SiteFooter } from "../components/SiteFooter";
+import { createPageMetadata } from "../lib/seo";
 import { SleepDebtCalculator } from "./SleepDebtCalculator";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Sleep Debt Calculator: Estimate Your Sleep Deficit",
   description:
     "Use this sleep debt calculator to estimate how much sleep you have missed and plan a gentle recovery schedule.",
-};
+  path: "/sleep-debt-calculator",
+});
 
 export default function SleepDebtCalculatorPage() {
   return (
@@ -61,6 +63,7 @@ export default function SleepDebtCalculatorPage() {
             Get the 7-day sleep plan
           </a>
         </section>
+        <SiteFooter />
       </section>
     </main>
   );
